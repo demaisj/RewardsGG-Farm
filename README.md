@@ -25,5 +25,5 @@ Feel free to report any bug, or suggest me some new features!
 
 ## Changelog
 
-**CP-FARM v1.0**
+**RewardsGG-Farm v1.0**
 + initial release
