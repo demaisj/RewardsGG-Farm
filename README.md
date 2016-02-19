@@ -7,6 +7,12 @@ Want to participate in some giveaways but you're lazy, enjoy this automatic tick
 
 Working only on **[Rewards.gg](https://rewards.gg)**.
 
+Features:
+- Removes stream, ads and annoying content
+- Auto click stream ad
+- Auto add some random tickets (5 per day)
+- Auto spam the server to get tickets
+
 This script is updating automatically, you don't need to go & check updates by yourself.
 
 **How to install:**
