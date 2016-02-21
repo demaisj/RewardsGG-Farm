@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         RewardsGG Farm [v1.0.2b1 TESTED]
+// @name         RewardsGG Farm [v1.0.2b2 TESTED]
 // @namespace    https://github.com/DeathMiner/RewardsGG-Farm
-// @version      1.1
+// @version      1.2
 // @description  Want to participate in some giveaways but you're lazy, enjoy this automatic ticket farm!
 // @author       Death_Miner
 // @license      MIT
@@ -33,8 +33,8 @@
 !function(a){var b=!1,c=function(c){void 0!==c&&this.setOption(c);var d=this;a.addEventListener("load",function(){setTimeout(function(){d._options.checkOnLoad===!0&&d.check(!1)},1)},!1);var d=this;this.debug={set:function(a){return b=!!a,d},get:function(){return b}}};c.prototype={setOption:function(a,b){if(void 0!==b){var c=a;a={},a[c]=b}for(option in a)this._options[option]=a[option];return this},_options:{checkOnLoad:!0,resetOnEnd:!0},_var:{triggers:[]},check:function(a){return this.emitEvent(!1),!0},clearEvent:function(){this._var.triggers=[]},emitEvent:function(a){if(a===!1){for(var b=this._var.triggers,c=0;c<b.length;c+=1)b[c]instanceof Function&&b[c]();this._options.resetOnEnd===!0&&this.clearEvent()}return this},on:function(a,b){return a===!1&&this._var.triggers.push(b),this},onDetected:function(a){return this},onNotDetected:function(a){return this.on(!1,a)}};var d=new c;for(var e in d)Object.defineProperty(d,e,{value:d[e],configurable:!1});Object.defineProperties(a,{fuckAdBlock:{value:d,enumerable:!0,writable:!1}}),Object.defineProperties(a,{blockAdBlock:{value:d,enumerable:!0,writable:!1}})}(window);
 
 /**
- * REWARDSGG FARM v1.1
- * Automatic ticket farm system. [v1.0.2b1 TESTED]
+ * REWARDSGG FARM v1.2
+ * Automatic ticket farm system. [v1.0.2b2 TESTED]
  * By Death_Miner, MIT licensied
  *
  * https://github.com/DeathMiner/Rewards-gg_Farm
@@ -89,14 +89,14 @@
 
     // CHANGE THE TITLE OF THE PAGE
     var title = function(message){
-            document.title = "[FARM] "+message;
-            console.log("[FARM] "+message);
+            document.title = "["+info.short_name+"] "+message;
+            console.log("["+info.name+"] "+message);
         },
 
         // REFRESHES ON ERROR
         error_refresh = function(){
             window.swal({
-                title: '[REWARDS.GG FARM]',
+                title: '['+info.name+']',
                 text:  'Error! Refreshing...'
             })
 
@@ -107,74 +107,82 @@
 
         // CLEANS THE PAGE MARKUP
         clean_page = function(){
-            $$(".video-iframe-col, .tickets-info-container, .get-tickets-joboffer").forEach(function($el){
+            $$(".video-main-wrapper > .row:nth-child(1), .video-main-wrapper > .row:nth-child(2), .video-main-wrapper > .row:nth-child(3), .get-tickets-partner, #partner-block, footer").forEach(function($el){
                 $el.remove();
             })
+            $(".video-main-wrapper").parentNode.classList.add("col-md-offset-2", "col-lg-offset-2")
+            $("#getTicketBlock").style.borderTop = "none";
             $.contents($("body"), [
                 {
                     tag: "span",
                     id: "videoStreamPlayer"  
                 }
             ])
-            $("#getTicketBlock h2").innerHTML = "[REWARDS.GG FARM]";
+            $.style($('#flashTester'), {
+            	display: "block",
+            	position: "absolute",
+            	top: "-9999px",
+            	left: "-9999px",
+            	visibility: "hidden"
+            })
+            $("#getTicketBlock h2").innerHTML = "["+info.name+" v"+info.version+"]<br><small>Site v"+info.site_version+" (tested on v"+info.tested+")</small>";
             $("#getTicketBlock h3").innerHTML = "<span class=\"ticket-number\">"+$ticketNumber.innerText+"</span> NEW TICKETS IN <span class=\"more-seconds\">x</span> SECONDS";
-            $("#getTicketBlock p").innerHTML = "Just let this farm run in background, and you'll have plenty of shining tickets!<br>Feel free to report any bug here : <a href=\"https://github.com/DeathMiner/RewardsGG-Farm/issues\" style=\"color:#337ab7;\">github.com/DeathMiner/RewardsGG-Farm/issues</a>";
+            $("#getTicketBlock p").innerHTML = "Just let this farm run in background, and you'll have plenty of shining tickets!<br>Feel free to report any bug here : <a href=\"https://github.com/DeathMiner/RewardsGG-Farm/issues\" style=\"color:#337ab7;\" target=\"_blank\">github.com/DeathMiner/RewardsGG-Farm/issues</a>";
             $("#ticketsTimeButton").classList.add("hidden");
             $("#ticketsTimePanel").classList.add("active");
-            $("#ticketsTimePanel").setAttribute("style", "transform: scale(1.5);transform-origin: bottom left;");
+            $.style($("#ticketsTimePanel"), {
+            	transform: "scale(1.5)",
+            	"transform-origin": "bottom left"
+            })
             $("#ticketsTimePanel .close-btn").remove();
         },
 
-        // TRY TO GET TICKETS FROM THE JOB OFFER
-        try_job_offer = function(){
-            $.fetch(window.Routing.generate('app_job_offer_ticket'), {
+        // REQUEST THE REWARDS.GG API
+        request = function(endpoint, callback){
+			$.fetch(window.Routing.generate(endpoint), {
                 mehtod: 'GET',
                 responseType: "json",
                 headers: {
                     "X-Requested-With": "XMLHttpRequest"
                 }
             })
-            .then(function(xhr){
-                var data = xhr.response;
-
-                if(data.message.status === 'success' && data.message.ticket){
-                        var ticketsEarned = parseInt(data.message.ticket),
-                            previousTickets = parseInt($ticketCount.innerText),
-                            newTickets = previousTickets + ticketsEarned;
-
-                        // Animate earned tickets
-                        window.getTicket.animTicketAdded(ticketsEarned, 100);
-                        // Increment tickets number
-                        $ticketCount.innerText = newTickets;
-                }
-            })
+            .then(callback)
             .catch(function() {
                 error_refresh();
             });
         },
 
-        // TRY TO GET TICKETS FROM THE AD
-        try_ad = function(){
-            $.fetch(window.Routing.generate('app_add_adv_click_tickets'), {
-                method: "GET",
-                responseType: "json",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"
+        // UPDATE TICKET COUNT
+        add_tickets = function(ticketsEarned){
+        	var ticketsEarned = parseInt(ticketsEarned),
+                previousTickets = parseInt($ticketCount.innerText),
+                newTickets = previousTickets + ticketsEarned;
+
+            // Animate earned tickets
+            window.getTicket.animTicketAdded(ticketsEarned, 100);
+            // Increment tickets number
+            $ticketCount.innerText = newTickets;
+        },
+
+        // TRY TO GET TICKETS FROM THE JOB OFFER
+        try_job_offer = function(){
+            request('app_job_offer_ticket', function(xhr){
+                var data = xhr.response;
+
+                if(data.message.status === 'success' && data.message.ticket){
+                    add_tickets(data.message.ticket);
                 }
             })
-            .then(function(xhr){
+        },
+
+        // TRY TO GET TICKETS FROM THE AD
+        try_ad = function(){
+            request('app_add_adv_click_tickets', function(xhr){
                 var data = xhr.response;
 
                 if(data.msg){
                     if(data.ticket){
-                        var ticketsEarned = parseInt(data.ticket),
-                            previousTickets = parseInt($ticketCount.innerText),
-                            newTickets = previousTickets + ticketsEarned;
-
-                        // Animate earned tickets
-                        window.getTicket.animTicketAdded(ticketsEarned, 100);
-                        // Increment tickets number
-                        $ticketCount.innerText = newTickets;
+                        add_tickets(data.ticket);
 
                         // Update ticket timer panel
                         var now = new Date(),
@@ -187,33 +195,16 @@
                     error_refresh();
                 }
             })
-            .catch(function(){
-                error_refresh();
-            })
         },
 
         // TRY TO GET THE TICKETS FROM WAITING
         try_tickets = function(){
-            $.fetch(window.Routing.generate('app_add_tickets'), {
-                method: "GET",
-                responseType: "json",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"
-                }
-            })
-            .then(function(xhr){
+            request('app_add_tickets', function(xhr){
                 var data = xhr.response;
 
                 if(data.msg){
                     if (data.msg === 'Added' || data.msg === 'Updated') {
-                        var ticketsEarned = parseInt(data.ticket),
-                            previousTickets = parseInt($ticketCount.innerText),
-                            newTickets = previousTickets + ticketsEarned;
-
-                        // Animate earned tickets
-                        window.getTicket.animTicketAdded(ticketsEarned, 100);
-                        // Increment tickets number
-                        $ticketCount.innerText = newTickets;
+                        add_tickets(data.ticket);
                     }
                     else if(data.msg === 'Error: time limit not respected'){
                         window.getTicket.counter = data.difference;
@@ -224,15 +215,21 @@
                     error_refresh();
                 }
             })
-            .catch(function() {
-                error_refresh();
-            });
         },
 
         // Elements (added at DOMContentLoaded)
         $ticketCount,
         $ticketNumber,
-        $moreSeconds;
+        $moreSeconds,
+
+        // Farm infos
+        info = {
+        	version: "1.2",
+        	tested: "1.0.2b2",
+        	name: "REWARDS.GG FARM",
+        	short_name: "FARM",
+        	site_version: "x.x.x"
+        };
 
     // Show we're loading
     title("Loading...");
@@ -240,9 +237,18 @@
     // Wait for DOMContentLoaded
     $.ready().then(function(){
 
+    	// Replace FlashBlockDetect with custom one
+		window.flashBlockDetect = function(callback){
+			callback(0);
+		};
+
+		// Get elements from the DOM
         $ticketCount = $(".tickets-count"),
         $ticketNumber = $(".ticket-number"),
         $moreSeconds = $(".more-seconds");
+
+        // Get site version
+        info.site_version = $(".footer-copyrights").innerText.split(" | v")[1];
 
         // Force DEV MODE to listen to console.log
         if(typeof window.app != "object") window.app = {};
@@ -262,7 +268,7 @@
             window.console.when("user must be connected", function(){
                 title("Please login!")
                 window.swal({
-                    title: '[REWARDS.GG FARM]',
+                    title: '['+info.name+']',
                     text:  'Please login first to farm tickets!'
                 })
 
