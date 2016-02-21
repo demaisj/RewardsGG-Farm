@@ -31,6 +31,11 @@ Feel free to report any bug, or suggest me some new features!
 
 ## Changelog
 
+**RewardsGG-Farm v1.2**
+- Tested on rewards.gg v1.0.2b2
+- FlashBlock compatible
+- Cleaner code
+
 **RewardsGG-Farm v1.1**
 - Less dependency on Rewards.gg code (dumped jQuery)
 - Now showing the right number of tickets that will be earned
