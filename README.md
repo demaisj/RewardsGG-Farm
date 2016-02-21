@@ -31,6 +31,10 @@ Feel free to report any bug, or suggest me some new features!
 
 ## Changelog
 
+**RewardsGG-Farm v1.2.1**
+- Fuck FuckAdblock updated to version 5
+- Message in title bar when tickets are earned
+
 **RewardsGG-Farm v1.2**
 - Tested on rewards.gg v1.0.2b2
 - FlashBlock compatible
