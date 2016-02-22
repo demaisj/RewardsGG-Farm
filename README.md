@@ -31,6 +31,11 @@ Feel free to report any bug, or suggest me some new features!
 
 ## Changelog
 
+**RewardsGG-Farm v1.3**
+- Tested on website version 1.0.3b2
+- Now collecting stats (username, visits & tickets) for future features
+- Fixed bug in requests
+
 **RewardsGG-Farm v1.2.1**
 - Fuck FuckAdblock updated to version 5
 - Message in title bar when tickets are earned
