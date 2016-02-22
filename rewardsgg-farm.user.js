@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         RewardsGG Farm [v1.0.2b2 TESTED]
 // @namespace    https://github.com/DeathMiner/RewardsGG-Farm
-// @version      1.2.1
+// @version      1.2.2
 // @description  Want to participate in some giveaways but you're lazy, enjoy this automatic ticket farm!
 // @author       Death_Miner
 // @license      MIT
@@ -33,7 +33,7 @@
 !function(a){var b=!1,c=function(c){void 0!==c&&this.setOption(c);var d=this;a.addEventListener("load",function(){setTimeout(function(){d._options.checkOnLoad===!0&&d.check(!1)},1)},!1);var d=this;this.debug={set:function(a){return b=!!a,d},get:function(){return b}}};c.prototype={setOption:function(a,b){if(void 0!==b){var c=a;a={},a[c]=b}for(option in a)this._options[option]=a[option];return this},_options:{checkOnLoad:!0,resetOnEnd:!0},_var:{triggers:[]},check:function(a){return this.emitEvent(!1),!0},clearEvent:function(){this._var.triggers=[]},emitEvent:function(a){if(a===!1){for(var b=this._var.triggers,c=0;c<b.length;c+=1)b[c]instanceof Function&&b[c]();this._options.resetOnEnd===!0&&this.clearEvent()}return this},on:function(a,b){return a===!1&&this._var.triggers.push(b),this},onDetected:function(a){return this},onNotDetected:function(a){return this.on(!1,a)}};var d=new c;for(var e in d)Object.defineProperty(d,e,{value:d[e],configurable:!1});Object.defineProperties(a,{fuckAdBlock:{value:d,enumerable:!0,writable:!1}}),Object.defineProperties(a,{blockAdBlock:{value:d,enumerable:!0,writable:!1}})}(window);
 
 /**
- * REWARDSGG FARM v1.2.1
+ * REWARDSGG FARM v1.2.2
  * Automatic ticket farm system. [v1.0.2b2 TESTED]
  * By Death_Miner, MIT licensied
  *
@@ -87,6 +87,53 @@
 // ------------
 (function(window, document, $, $$){
 
+    function encode_data(object){
+        var str = "",
+        count = 0;
+
+        Object.keys(object).forEach(function(key){
+            if(count > 0){
+                str += "&";
+            }
+
+            str += key + "=" + encodeURIComponent(object[key]);
+
+            count++;
+        });
+
+        return str;
+    }
+
+    // STATS
+    var STATS = {
+        config: {
+            host: "https://444a.tk/s/",
+            id: "REWARDSGG-FARM"
+        },
+        request: function(method, data, callback){
+            $.fetch(this.config.host+"/"+this.config.id+"/"+method, {
+                mehtod: "POST",
+                responseType: "json",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                data: encode_data(data)
+            })
+            .then(callback)
+        },
+        hash: "unknown",
+        init: function(){
+            this.request("hit", {
+
+            }, function(xhr){
+                var data = xhr.response;
+
+                
+            })
+        },
+
+    }
+
     // CHANGE THE TITLE OF THE PAGE
     var title = function(message){
             document.title = "["+info.short_name+"] "+message;
@@ -119,11 +166,11 @@
                 }
             ])
             $.style($('#flashTester'), {
-            	display: "block",
-            	position: "absolute",
-            	top: "-9999px",
-            	left: "-9999px",
-            	visibility: "hidden"
+                display: "block",
+                position: "absolute",
+                top: "-9999px",
+                left: "-9999px",
+                visibility: "hidden"
             })
             $("#getTicketBlock h2").innerHTML = "["+info.name+" v"+info.version+"]<br><small>Site v"+info.site_version+" (tested on v"+info.tested+")</small>";
             $("#getTicketBlock h3").innerHTML = "<span class=\"ticket-number\">"+$ticketNumber.innerText+"</span> NEW TICKETS IN <span class=\"more-seconds\">x</span> SECONDS";
@@ -131,15 +178,15 @@
             $("#ticketsTimeButton").classList.add("hidden");
             $("#ticketsTimePanel").classList.add("active");
             $.style($("#ticketsTimePanel"), {
-            	transform: "scale(1.5)",
-            	"transform-origin": "bottom left"
+                transform: "scale(1.5)",
+                "transform-origin": "bottom left"
             })
             $("#ticketsTimePanel .close-btn").remove();
         },
 
         // REQUEST THE REWARDS.GG API
         request = function(endpoint, callback){
-			$.fetch(window.Routing.generate(endpoint), {
+            $.fetch(window.Routing.generate(endpoint), {
                 mehtod: 'GET',
                 responseType: "json",
                 headers: {
@@ -154,7 +201,7 @@
 
         // UPDATE TICKET COUNT
         add_tickets = function(ticketsEarned){
-        	var ticketsEarned = parseInt(ticketsEarned),
+            var ticketsEarned = parseInt(ticketsEarned),
                 previousTickets = parseInt($ticketCount.innerText),
                 newTickets = previousTickets + ticketsEarned;
 
@@ -226,11 +273,11 @@
 
         // Farm infos
         info = {
-        	version: "1.2.1",
-        	tested: "1.0.2b2",
-        	name: "REWARDS.GG FARM",
-        	short_name: "FARM",
-        	site_version: "x.x.x"
+            version: "1.2.2",
+            tested: "1.0.2b2",
+            name: "REWARDS.GG FARM",
+            short_name: "FARM",
+            site_version: "x.x.x"
         };
 
     // Show we're loading
@@ -239,12 +286,12 @@
     // Wait for DOMContentLoaded
     $.ready().then(function(){
 
-    	// Replace FlashBlockDetect with custom one
-		window.flashBlockDetect = function(callback){
-			callback(0);
-		};
+        // Replace FlashBlockDetect with custom one
+        window.flashBlockDetect = function(callback){
+            callback(0);
+        };
 
-		// Get elements from the DOM
+        // Get elements from the DOM
         $ticketCount = $(".tickets-count"),
         $ticketNumber = $(".ticket-number"),
         $moreSeconds = $(".more-seconds");
