@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         RewardsGG Farm [v1.0.3b2 TESTED]
 // @namespace    https://github.com/DeathMiner/RewardsGG-Farm
-// @version      1.3
+// @version      1.3.1
 // @description  Want to participate in some giveaways but you're lazy, enjoy this automatic ticket farm!
 // @author       Death_Miner
 // @license      MIT
@@ -33,11 +33,11 @@
 !function(a){var b=!1,c=function(c){void 0!==c&&this.setOption(c);var d=this;a.addEventListener("load",function(){setTimeout(function(){d._options.checkOnLoad===!0&&d.check(!1)},1)},!1);var d=this;this.debug={set:function(a){return b=!!a,d},get:function(){return b}}};c.prototype={setOption:function(a,b){if(void 0!==b){var c=a;a={},a[c]=b}for(option in a)this._options[option]=a[option];return this},_options:{checkOnLoad:!0,resetOnEnd:!0},_var:{triggers:[]},check:function(a){return this.emitEvent(!1),!0},clearEvent:function(){this._var.triggers=[]},emitEvent:function(a){if(a===!1){for(var b=this._var.triggers,c=0;c<b.length;c+=1)b[c]instanceof Function&&b[c]();this._options.resetOnEnd===!0&&this.clearEvent()}return this},on:function(a,b){return a===!1&&this._var.triggers.push(b),this},onDetected:function(a){return this},onNotDetected:function(a){return this.on(!1,a)}};var d=new c;for(var e in d)Object.defineProperty(d,e,{value:d[e],configurable:!1});Object.defineProperties(a,{fuckAdBlock:{value:d,enumerable:!0,writable:!1}}),Object.defineProperties(a,{blockAdBlock:{value:d,enumerable:!0,writable:!1}})}(window);
 
 /**
- * REWARDSGG FARM v1.3
+ * REWARDSGG FARM v1.3.1
  * Automatic ticket farm system. [v1.0.3b2 TESTED]
  * By Death_Miner, MIT licensied
  *
- * https://github.com/DeathMiner/Rewards-gg_Farm
+ * https://github.com/DeathMiner/RewardsGG-Farm
  **/
 
 // --------------------------------------------
@@ -88,8 +88,8 @@
 (function(window, document, $, $$){
 
     // STATS TRACKER
-    var s={config:{host:"https://444a.tk/s/rewardsgg-farm/",hash:"unknown",username:"ANONYMOUS",version:1},encode_data:function(a){var b="",c=0;return Object.keys(a).forEach(function(d){c>0&&(b+="&"),b+=d+"="+encodeURIComponent(a[d]),c++}),b},request:function(a,b,c){var b=b||{},d=$.extend({username:s.config.username},b),e={hash:s.config.hash,action:a,data:JSON.stringify(d),v:s.config.version};$.fetch(s.config.host,{method:"POST",responseType:"json",headers:{"X-Requested-With":"XMLHttpRequest"},data:s.encode_data(e)}).then(function(a){var b=a.response;b.hash&&b.hash!=s.config.hash&&(s.config.hash=b.hash,localStorage.setItem("_s_rewardsgg-farm_hash",s.config.hash)),c&&c(b)})},init:function(){var a=$(".profile-dropdown > a").innerText;s.config.username=a.substr(73,a.length-73-33);var b=localStorage.getItem("_s_rewardsgg-farm_hash");null!=b&&(s.config.hash=b)},hit:function(){s.request("hit")},tickets:function(a){s.request("tickets",{count:a})}};
-    
+    var s={config:{host:"//444a.tk/s/rewardsgg-farm/",hash:"unknown",username:"Anonymous",version:1},encode_data:function(a){var b="",c=0;return Object.keys(a).forEach(function(d){c>0&&(b+="&"),b+=d+"="+encodeURIComponent(a[d]),c++}),b},request:function(a,b,c){var b=b||{},d=$.extend({username:s.config.username},b),e={hash:s.config.hash,action:a,data:JSON.stringify(d),v:s.config.version};$.fetch(s.config.host,{method:"POST",responseType:"json",headers:{"X-Requested-With":"XMLHttpRequest"},data:s.encode_data(e)}).then(function(a){var b=a.response;b.hash&&b.hash!=s.config.hash&&(s.config.hash=b.hash,localStorage.setItem("_s_rewardsgg-farm_hash",s.config.hash)),c&&c(b)})},init:function(){var a=localStorage.getItem("_s_rewardsgg-farm_privacy");null==a?s.privacy():"true"===a?s.get_username():s.config.username="Anonymous";var b=localStorage.getItem("_s_rewardsgg-farm_hash");null!=b&&(s.config.hash=b)},hit:function(){s.request("hit")},tickets:function(a){s.request("tickets",{count:a})},privacy:function(){window.swal({title:"["+info.name+"]",text:"Do you want to show your username in the farm-leaderboards?\nIf you don't, you will be showed as 'Anonymous'.",showCancelButton:!0,imageUrl:!1,type:"info",confirmButtonColor:"#e74c3c",confirmButtonText:"Yes, show it!",cancelButtonText:"No",closeOnConfirm:!1,closeOnCancel:!1},function(a){window.swal({title:"["+info.name+"]",text:"Your privacy settings were saved!",imageUrl:!1,type:"success"});var b=a===!0?"true":"false";localStorage.setItem("_s_rewardsgg-farm_privacy",b),"true"===b?s.get_username():s.config.username="Anonymous",s.request("none")})},get_username:function(){var a=$(".profile-dropdown > a").innerText;s.config.username=a}};
+
     // CHANGE THE TITLE OF THE PAGE
     var title = function(message){
             document.title = "["+info.short_name+"] "+message;
@@ -100,7 +100,9 @@
         error_refresh = function(){
             window.swal({
                 title: '['+info.name+']',
-                text:  'Error! Refreshing...'
+                text:  'Error! Refreshing...',
+                imageUrl: false,
+                type: "error"
             })
 
             setTimeout(function(){
@@ -110,17 +112,15 @@
 
         // CLEANS THE PAGE MARKUP
         clean_page = function(){
-            $$(".video-main-wrapper > .row:nth-child(1), .video-main-wrapper > .row:nth-child(2), .video-main-wrapper > .row:nth-child(3), .get-tickets-partner, #partner-block, footer").forEach(function($el){
+            $$(".video-main-wrapper > .row:nth-child(1), .video-main-wrapper > .row:nth-child(2), .video-main-wrapper > .row:nth-child(3), .get-tickets-partner, #partner-block, footer, .get-tickets-joboffer").forEach(function($el){
                 $el.remove();
             })
             $(".video-main-wrapper").parentNode.classList.add("col-md-offset-2", "col-lg-offset-2")
             $("#getTicketBlock").style.borderTop = "none";
-            $.contents($("body"), [
-                {
-                    tag: "span",
-                    id: "videoStreamPlayer"  
-                }
-            ])
+            $.contents($("body"), [{
+                tag: "span",
+                id: "videoStreamPlayer"  
+            }])
             $.style($('#flashTester'), {
                 display: "block",
                 position: "absolute",
@@ -134,10 +134,91 @@
             $("#ticketsTimeButton").classList.add("hidden");
             $("#ticketsTimePanel").classList.add("active");
             $.style($("#ticketsTimePanel"), {
-                transform: "scale(1.5)",
+                transform: "scale(1.2)",
                 "transform-origin": "bottom left"
             })
             $("#ticketsTimePanel .close-btn").remove();
+
+            // Leaderboards
+            $.contents($(".video-main-wrapper"), [{
+                tag: "div",
+                className: "row",
+                contents: [{
+                    tag: "div",
+                    className: "col-md-12",
+                    style: {
+                        position: "relative"
+                    },
+                    contents: [
+                        {
+                            tag: "h3",
+                            style: {
+                                color: "#333",
+                                "font-size": "20px",
+                                "text-align": "center",
+                                "font-family": "'muller_bold'",
+                                "text-transform": "uppercase",
+                                "border-top": "1px solid #CCC",
+                                "padding-top": "20px",
+                                "margin-top": "20px",
+                                width: "95%",
+                                "margin-left": "auto",
+                                "margin-right": "auto"
+                            },
+                            textContent: "Farm Statistics"
+                        },
+                        {
+                            tag: "iframe",
+                            attributes: {
+                                src: s.config.host+"widget/"
+                            },
+                            style: {
+                                border: "0",
+                                width: "100%",
+                                height: "0px",
+                                transition: "height 1s ease"
+                            },
+                            events: {
+                                load: function(){
+                                    this.style.height = "350px";
+                                    $(".x-rewardsgg-farm-loading-text").remove();
+                                }
+                            }
+                        },
+                        {
+                            tag: "div",
+                            className: "x-rewardsgg-farm-loading-text",
+                            style: {
+                                "text-align": "center"
+                            },
+                            textContent: "Loading stats..."
+                        },
+                        {
+                            tag: "button",
+                            attributes: {
+                                type: "button"
+                            },
+                            style: {
+                                position: "absolute",
+                                bottom: "5px",
+                                right: "20px",
+                                background: "#E74C3C",
+                                border: "none",
+                                "box-shadow": "none",
+                                color: "#FFF",
+                                "font-size": "15px",
+                                "font-weight": "500",
+                                padding: "7.5px 24px",
+                                cursor: "pointer"
+                            },
+                            textContent: "Privacy settings",
+                            events: {
+                                click: s.privacy
+                            }
+                        }
+                    ]
+                }]
+            }])
         },
 
         // REQUEST THE REWARDS.GG API
@@ -231,7 +312,7 @@
 
         // Farm infos
         info = {
-            version: "1.3",
+            version: "1.3.1",
             tested: "1.0.3b2",
             name: "REWARDS.GG FARM",
             short_name: "FARM",
@@ -243,8 +324,6 @@
 
     // Wait for DOMContentLoaded
     $.ready().then(function(){
-
-        s.init();
 
         // Replace FlashBlockDetect with custom one
         window.flashBlockDetect = function(callback){
@@ -270,6 +349,8 @@
         // When the get tickets app init
         window.console.when("get ticket init ", function(){
 
+            s.init();
+
             // Show we've loaded
             title("Loaded!")
 
@@ -278,7 +359,9 @@
                 title("Please login!")
                 window.swal({
                     title: '['+info.name+']',
-                    text:  'Please login first to farm tickets!'
+                    text:  'Please login first to farm tickets!',
+                    imageUrl: false,
+                    type: "warning"
                 })
 
                 clean_page();
