@@ -31,6 +31,12 @@ Feel free to report any bug, or suggest me some new features!
 
 ## Changelog
 
+**RewardsGG-Farm v1.3.1**
+- Better alert ui
+- More unwanted content removed
+- NEW FEATURE: The farm is now showing a leaderboard of the best farmers!
+- You can choose to show your username or not in the leaderboards, in order to respect your privacy
+
 **RewardsGG-Farm v1.3**
 - Tested on website version 1.0.3b2
 - Now collecting stats (username, visits & tickets) for future features
