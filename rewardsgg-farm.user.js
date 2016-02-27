@@ -128,6 +128,8 @@
                 left: "-9999px",
                 visibility: "hidden"
             })
+            console.log(info.site_version)
+            console.log(info.tested)
             var tested_on = info.site_version != info.tested ? " (tested on v"+info.tested+")" : "";
             $("#getTicketBlock h2").innerHTML = "["+info.name+" v"+info.version+"]<br><small>Site v"+info.site_version+tested_on+"</small>";
             $("#getTicketBlock h3").innerHTML = "<span class=\"ticket-number\">"+$ticketNumber.innerText+"</span> NEW TICKETS IN <span class=\"more-seconds\">x</span> SECONDS";
@@ -380,7 +382,7 @@
         $moreSeconds = $(".more-seconds");
 
         // Get site version
-        info.site_version = $(".footer-copyrights").innerText.split(" | v")[1];
+        info.site_version = $(".footer-copyrights").innerText.split(" | v")[1].replace(/\s/g, "");
 
         // Force DEV MODE to listen to console.log
         if(typeof window.app != "object") window.app = {};
