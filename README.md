@@ -31,6 +31,10 @@ Feel free to report any bug, or suggest me some new features!
 
 ## Changelog
 
+**RewardsGG-Farm v1.4**
+- Checks for updates directly on github
+- UI tweaks
+
 **RewardsGG-Farm v1.3.1**
 - Better alert ui
 - More unwanted content removed
