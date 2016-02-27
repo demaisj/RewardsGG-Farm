@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         RewardsGG Farm [v1.0.3b2 TESTED]
+// @name         RewardsGG Farm [v1.0.5b1 TESTED]
 // @namespace    https://github.com/DeathMiner/RewardsGG-Farm
-// @version      1.3.1
+// @version      1.4
 // @description  Want to participate in some giveaways but you're lazy, enjoy this automatic ticket farm!
 // @author       Death_Miner
 // @license      MIT
@@ -33,8 +33,8 @@
 !function(a){var b=!1,c=function(c){void 0!==c&&this.setOption(c);var d=this;a.addEventListener("load",function(){setTimeout(function(){d._options.checkOnLoad===!0&&d.check(!1)},1)},!1);var d=this;this.debug={set:function(a){return b=!!a,d},get:function(){return b}}};c.prototype={setOption:function(a,b){if(void 0!==b){var c=a;a={},a[c]=b}for(option in a)this._options[option]=a[option];return this},_options:{checkOnLoad:!0,resetOnEnd:!0},_var:{triggers:[]},check:function(a){return this.emitEvent(!1),!0},clearEvent:function(){this._var.triggers=[]},emitEvent:function(a){if(a===!1){for(var b=this._var.triggers,c=0;c<b.length;c+=1)b[c]instanceof Function&&b[c]();this._options.resetOnEnd===!0&&this.clearEvent()}return this},on:function(a,b){return a===!1&&this._var.triggers.push(b),this},onDetected:function(a){return this},onNotDetected:function(a){return this.on(!1,a)}};var d=new c;for(var e in d)Object.defineProperty(d,e,{value:d[e],configurable:!1});Object.defineProperties(a,{fuckAdBlock:{value:d,enumerable:!0,writable:!1}}),Object.defineProperties(a,{blockAdBlock:{value:d,enumerable:!0,writable:!1}})}(window);
 
 /**
- * REWARDSGG FARM v1.3.1
- * Automatic ticket farm system. [v1.0.3b2 TESTED]
+ * REWARDSGG FARM v1.4
+ * Automatic ticket farm system. [v1.0.5b1 TESTED]
  * By Death_Miner, MIT licensied
  *
  * https://github.com/DeathMiner/RewardsGG-Farm
@@ -128,7 +128,8 @@
                 left: "-9999px",
                 visibility: "hidden"
             })
-            $("#getTicketBlock h2").innerHTML = "["+info.name+" v"+info.version+"]<br><small>Site v"+info.site_version+" (tested on v"+info.tested+")</small>";
+            var tested_on = info.site_version != info.tested ? " (tested on v"+info.tested+")" : "";
+            $("#getTicketBlock h2").innerHTML = "["+info.name+" v"+info.version+"]<br><small>Site v"+info.site_version+tested_on+"</small>";
             $("#getTicketBlock h3").innerHTML = "<span class=\"ticket-number\">"+$ticketNumber.innerText+"</span> NEW TICKETS IN <span class=\"more-seconds\">x</span> SECONDS";
             $("#getTicketBlock p").innerHTML = "Just let this farm run in background, and you'll have plenty of shining tickets!<br>Feel free to report any bug here : <a href=\"https://github.com/DeathMiner/RewardsGG-Farm/issues\" style=\"color:#337ab7;\" target=\"_blank\">github.com/DeathMiner/RewardsGG-Farm/issues</a>";
             $("#ticketsTimeButton").classList.add("hidden");
@@ -312,11 +313,54 @@
 
         // Farm infos
         info = {
-            version: "1.3.1",
-            tested: "1.0.3b2",
+            version: "1.4",
+            tested: "1.0.5b1",
             name: "REWARDS.GG FARM",
             short_name: "FARM",
             site_version: "x.x.x"
+        },
+
+        // CHECKS IF AN UPDATE IS AVAILABLE
+        check_updates = function(){
+
+            $.fetch("//api.github.com/repos/DeathMiner/RewardsGG-Farm/releases/latest", {
+                method: 'GET',
+                responseType: "json",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(function(xhr){
+                var data = xhr.response,
+                    version = data.tag_name.substr(1);
+
+                if(info.version != version){
+                    window.swal({
+                        title: '['+info.name+']',
+                        text: "A new update is available!\n\n"+data.name+"\n\nUpdate infos:\n"+data.body,
+                        showCancelButton: true,
+                        imageUrl: false,
+                        type: "info",
+                        confirmButtonColor: '#e74c3c',
+                        confirmButtonText: "Update now!",
+                        cancelButtonText: "Later",
+                        closeOnConfirm: false,
+                        closeOnCancel: true
+                    },
+                    function(result){
+
+                        if(result){
+                            window.swal({
+                                title: '['+info.name+']',
+                                text: "Updating script...",
+                                imageUrl: false,
+                                type: "success"
+                            });
+                            window.location = "https://github.com/DeathMiner/RewardsGG-Farm/raw/"+data.tag_name+"/rewardsgg-farm.user.js"
+                        }
+                    });
+                }
+            })
         };
 
     // Show we're loading
@@ -389,6 +433,9 @@
                         event.preventDefault();
                     }
                 });
+
+                // Check updates
+                check_updates();
             })
 
             // Triggers each minute
