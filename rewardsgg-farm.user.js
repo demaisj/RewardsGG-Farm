@@ -112,15 +112,6 @@
 
         // CLEANS THE PAGE MARKUP
         clean_page = function(){
-            $$(".video-main-wrapper > .row:nth-child(1), .video-main-wrapper > .row:nth-child(2), .video-main-wrapper > .row:nth-child(3), .get-tickets-partner, #partner-block, footer, .get-tickets-joboffer").forEach(function($el){
-                $el.remove();
-            })
-            $(".video-main-wrapper").parentNode.classList.add("col-md-offset-2", "col-lg-offset-2")
-            $("#getTicketBlock").style.borderTop = "none";
-            $.contents($("body"), [{
-                tag: "span",
-                id: "videoStreamPlayer"  
-            }])
             $.style($('#flashTester'), {
                 display: "block",
                 position: "absolute",
@@ -128,100 +119,122 @@
                 left: "-9999px",
                 visibility: "hidden"
             })
-            console.log(info.site_version)
-            console.log(info.tested)
-            var tested_on = info.site_version != info.tested ? " (tested on v"+info.tested+")" : "";
-            $("#getTicketBlock h2").innerHTML = "["+info.name+" v"+info.version+"]<br><small>Site v"+info.site_version+tested_on+"</small>";
-            $("#getTicketBlock h3").innerHTML = "<span class=\"ticket-number\">"+$ticketNumber.innerText+"</span> NEW TICKETS IN <span class=\"more-seconds\">x</span> SECONDS";
-            $("#getTicketBlock p").innerHTML = "Just let this farm run in background, and you'll have plenty of shining tickets!<br>Feel free to report any bug here : <a href=\"https://github.com/DeathMiner/RewardsGG-Farm/issues\" style=\"color:#337ab7;\" target=\"_blank\">github.com/DeathMiner/RewardsGG-Farm/issues</a>";
-            $("#ticketsTimeButton").classList.add("hidden");
-            $("#ticketsTimePanel").classList.add("active");
-            $.style($("#ticketsTimePanel"), {
-                transform: "scale(1.2)",
-                "transform-origin": "bottom left"
+            $("#streamChat").setAttribute("src", "https://kiwiirc.com/client/irc.kiwiirc.com/?&theme=mini#RewardsGGFarm");
+            $("#videoStreamPlayer").setAttribute("src", s.config.host+"widget/");
+            $.once($("#videoStreamPlayer"), {load:function(){
+                $(".x-rewardsgg-farm-loading-text").remove();
+            }})
+            $$("#reloadPlayerMsg, #videoControls, .notification-bar, #advIframe, #partner-block, footer, #menu-nav").forEach(function($el){
+                $el.remove();
             })
-            $("#ticketsTimePanel .close-btn").remove();
-
-            // Leaderboards
-            $.contents($(".video-main-wrapper"), [{
-                tag: "div",
-                className: "row",
-                contents: [{
+            $(".video-iframe-wrapper").style.backgroundColor = "#FFF";
+            $.contents($(".video-iframe-wrapper"), [
+                {
                     tag: "div",
-                    className: "col-md-12",
+                    className: "x-rewardsgg-farm-loading-text",
                     style: {
-                        position: "relative"
+                        "text-align": "center"
                     },
+                    textContent: "Loading stats..."
+                },
+                {
+                    tag: "button",
+                    attributes: {
+                        type: "button"
+                    },
+                    style: {
+                        position: "absolute",
+                        bottom: "5px",
+                        right: "20px",
+                        background: "#E74C3C",
+                        border: "none",
+                        "box-shadow": "none",
+                        color: "#FFF",
+                        "font-size": "15px",
+                        "font-weight": "500",
+                        padding: "7.5px 24px",
+                        cursor: "pointer"
+                    },
+                    textContent: "Privacy settings",
+                    events: {
+                        click: s.privacy
+                    }
+                }
+            ])
+            $("#menuTheaterChat").innerHTML = '<ul class="nav navbar-nav navbar-right"><li id="xRewardsGGFarmTicketsFarmed">0</li><li class="darker">Tickets farmed</li></ul>';
+            $(".getTickets-adv-panel h3").innerHTML = "About this farm<span class=\"fa fa-shopping-bag pull-right\"></span>";
+            $.contents($(".getTickets-adv-panel"), [
+                {
+                    tag: "p",
+                    contents: ["Want to participate in some giveaways but you're lazy, enjoy this automatic ticket farm!", {tag:"br"}, "Brought to you with love by Death_Miner."]
+                },
+                {
+                    tag: "p",
                     contents: [
+                        "If you love this farm, please show me some support by adding a star on GitHub!",
+                        {tag:"br"},
                         {
-                            tag: "h3",
-                            style: {
-                                color: "#333",
-                                "font-size": "20px",
-                                "text-align": "center",
-                                "font-family": "'muller_bold'",
-                                "text-transform": "uppercase",
-                                "border-top": "1px solid #CCC",
-                                "padding-top": "20px",
-                                "margin-top": "20px",
-                                width: "95%",
-                                "margin-left": "auto",
-                                "margin-right": "auto"
-                            },
-                            textContent: "Farm Statistics"
-                        },
-                        {
-                            tag: "iframe",
+                            tag: "a",
                             attributes: {
-                                src: s.config.host+"widget/"
+                                class: "github-button",
+                                href: "//github.com/DeathMiner/RewardsGG-Farm",
+                                "data-icon": "octicon-star",
+                                "data-style": "mega",
+                                "data-count-href": "/DeathMiner/RewardsGG-Farm/stargazers",
+                                "data-count-api": "/repos/DeathMiner/RewardsGG-Farm#stargazers_count",
+                                "data-count-aria-label": "# stargazers on GitHub",
+                                "aria-label": "Star DeathMiner/RewardsGG-Farm on GitHub"
                             },
-                            style: {
-                                border: "0",
-                                width: "100%",
-                                height: "0px",
-                                transition: "height 1s ease"
-                            },
-                            events: {
-                                load: function(){
-                                    this.style.height = "350px";
-                                    $(".x-rewardsgg-farm-loading-text").remove();
-                                }
-                            }
-                        },
-                        {
-                            tag: "div",
-                            className: "x-rewardsgg-farm-loading-text",
-                            style: {
-                                "text-align": "center"
-                            },
-                            textContent: "Loading stats..."
-                        },
-                        {
-                            tag: "button",
-                            attributes: {
-                                type: "button"
-                            },
-                            style: {
-                                position: "absolute",
-                                bottom: "5px",
-                                right: "20px",
-                                background: "#E74C3C",
-                                border: "none",
-                                "box-shadow": "none",
-                                color: "#FFF",
-                                "font-size": "15px",
-                                "font-weight": "500",
-                                padding: "7.5px 24px",
-                                cursor: "pointer"
-                            },
-                            textContent: "Privacy settings",
-                            events: {
-                                click: s.privacy
-                            }
+                            contents: ["Star"]
                         }
                     ]
-                }]
-            }])
+                },
+                {
+                    tag: "p",
+                    contents: [
+                        "If you've found a weird bug, or if you have suggestions, create an issue on GitHub!",
+                        {tag:"br"},
+                        {
+                            tag: "a",
+                            attributes: {
+                                class: "github-button",
+                                href: "//github.com/DeathMiner/RewardsGG-Farm/issues",
+                                "data-icon": "octicon-issue-opened",
+                                "data-style": "mega",
+                                "data-count-api": "/repos/DeathMiner/RewardsGG-Farm#open_issues_count",
+                                "data-count-aria-label": "# issues on GitHub",
+                                "aria-label": "Issue DeathMiner/RewardsGG-Farm on GitHub"
+                            },
+                            contents: ["Issue"]
+                        }
+                    ]
+                }
+            ])
+            $.contents($("body"), [
+                {
+                    tag: "script",
+                    attributes: {
+                        async: "async",
+                        defer: "defer",
+                        id: "github-bjs",
+                        src: "https://buttons.github.io/buttons.js"
+                    }
+                },
+                {
+                    tag: "style",
+                    attributes: {
+                        id: "x-rewardsgg-farm-tweaks"
+                    },
+                    contents: ".getTickets-adv-panel iframe{margin:0 !important;}.getTickets-adv-panel p{color:#000 !important;padding:0 20px !important;margin:10px 0 !important;}"
+                }
+            ])
+            var tested_on = info.site_version != info.tested ? " (tested on v"+info.tested+")" : "";
+            $.start($.create("h1", {innerHTML: "["+info.name+" v"+info.version+"]<br><small>Site v"+info.site_version+tested_on+"</small>"}), $("#get-tickets .container"))
+            $.contents($(".navbar-brand"), [{tag: "h1", contents:["FARM"]}])
+            $.style($(".navbar-brand img"), {
+                float: "left",
+                "margin-right": "5px"
+            })
         },
 
         // REQUEST THE REWARDS.GG API
@@ -430,7 +443,7 @@
                 }, 1000);
 
                 // Prevent user from leaving
-                $.delegate($("body"), "click", "a", function(event){
+                $.delegate($("body"), "click", "a:not([href^='#'])", function(event){
                     if(!confirm("Do you want to stop farming?")){
                         event.preventDefault();
                     }
