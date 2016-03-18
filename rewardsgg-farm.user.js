@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         RewardsGG Farm [v1.0.5b1 TESTED]
+// @name         RewardsGG Farm [v1.2.1b1 TESTED]
 // @namespace    https://github.com/DeathMiner/RewardsGG-Farm
-// @version      1.4
+// @version      1.5
 // @description  Want to participate in some giveaways but you're lazy, enjoy this automatic ticket farm!
 // @author       Death_Miner
 // @license      MIT
@@ -33,8 +33,8 @@
 !function(a){var b=!1,c=function(c){void 0!==c&&this.setOption(c);var d=this;a.addEventListener("load",function(){setTimeout(function(){d._options.checkOnLoad===!0&&d.check(!1)},1)},!1);var d=this;this.debug={set:function(a){return b=!!a,d},get:function(){return b}}};c.prototype={setOption:function(a,b){if(void 0!==b){var c=a;a={},a[c]=b}for(option in a)this._options[option]=a[option];return this},_options:{checkOnLoad:!0,resetOnEnd:!0},_var:{triggers:[]},check:function(a){return this.emitEvent(!1),!0},clearEvent:function(){this._var.triggers=[]},emitEvent:function(a){if(a===!1){for(var b=this._var.triggers,c=0;c<b.length;c+=1)b[c]instanceof Function&&b[c]();this._options.resetOnEnd===!0&&this.clearEvent()}return this},on:function(a,b){return a===!1&&this._var.triggers.push(b),this},onDetected:function(a){return this},onNotDetected:function(a){return this.on(!1,a)}};var d=new c;for(var e in d)Object.defineProperty(d,e,{value:d[e],configurable:!1});Object.defineProperties(a,{fuckAdBlock:{value:d,enumerable:!0,writable:!1}}),Object.defineProperties(a,{blockAdBlock:{value:d,enumerable:!0,writable:!1}})}(window);
 
 /**
- * REWARDSGG FARM v1.4
- * Automatic ticket farm system. [v1.0.5b1 TESTED]
+ * REWARDSGG FARM v1.5
+ * Automatic ticket farm system. [v1.2.1b1 TESTED]
  * By Death_Miner, MIT licensied
  *
  * https://github.com/DeathMiner/RewardsGG-Farm
@@ -315,8 +315,8 @@
 
         // Farm infos
         info = {
-            version: "1.4",
-            tested: "1.0.5b1",
+            version: "1.5",
+            tested: "1.2.1b1",
             name: "REWARDS.GG FARM",
             short_name: "FARM",
             site_version: "x.x.x"
