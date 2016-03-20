@@ -402,6 +402,9 @@
         if(typeof window.app.data != "object") window.app.data = {};
         window.app.data.devMod = true;
 
+        // Fake adframe.js
+        window.adblock = false;
+
         // Show we're waiting for app init
         title("Waiting...")
 
