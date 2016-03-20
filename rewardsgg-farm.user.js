@@ -119,10 +119,29 @@
                 left: "-9999px",
                 visibility: "hidden"
             })
-            $("#streamChat").setAttribute("src", "https://kiwiirc.com/client/irc.kiwiirc.com/?&theme=mini#RewardsGGFarm");
+            $("#streamChat").setAttribute("src", "https://kiwiirc.com/client/irc.kiwiirc.com/?nick="+encodeURIComponent(s.config.username)+"&theme=mini#RewardsGG-Farm");
+            $.once($("#streamChat"), {load:function(){
+                $("#xRewardsGGFarmChatLoading").remove();
+            }})
+            $.style($("#chatContent"), {
+                "border-left": "1px #CCC solid",
+                position: "relative"
+            });
+            $.contents($("#chatContent"), [{
+                tag: "div",
+                id: "xRewardsGGFarmChatLoading",
+                style: {
+                    "text-align": "center",
+                    position: "absolute",
+                    top:"0",
+                    left:"0",
+                    width:"100%"
+                },
+                textContent: "Loading chat..."
+            }])
             $("#videoStreamPlayer").setAttribute("src", s.config.host+"widget/");
             $.once($("#videoStreamPlayer"), {load:function(){
-                $(".x-rewardsgg-farm-loading-text").remove();
+                $("#xRewardsGGFarmStatsLoading").remove();
             }})
             $$("#reloadPlayerMsg, #videoControls, .notification-bar, #advIframe, #partner-block, footer, #menu-nav").forEach(function($el){
                 $el.remove();
@@ -131,7 +150,7 @@
             $.contents($(".video-iframe-wrapper"), [
                 {
                     tag: "div",
-                    className: "x-rewardsgg-farm-loading-text",
+                    id: "xRewardsGGFarmStatsLoading",
                     style: {
                         "text-align": "center"
                     },
