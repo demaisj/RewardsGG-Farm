@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         RewardsGG Farm [v1.0.5b1 TESTED]
+// @name         RewardsGG Farm [v1.2.1b1 TESTED]
 // @namespace    https://github.com/DeathMiner/RewardsGG-Farm
-// @version      1.4
+// @version      1.5
 // @description  Want to participate in some giveaways but you're lazy, enjoy this automatic ticket farm!
 // @author       Death_Miner
 // @license      MIT
@@ -33,8 +33,8 @@
 !function(a){var b=!1,c=function(c){void 0!==c&&this.setOption(c);var d=this;a.addEventListener("load",function(){setTimeout(function(){d._options.checkOnLoad===!0&&d.check(!1)},1)},!1);var d=this;this.debug={set:function(a){return b=!!a,d},get:function(){return b}}};c.prototype={setOption:function(a,b){if(void 0!==b){var c=a;a={},a[c]=b}for(option in a)this._options[option]=a[option];return this},_options:{checkOnLoad:!0,resetOnEnd:!0},_var:{triggers:[]},check:function(a){return this.emitEvent(!1),!0},clearEvent:function(){this._var.triggers=[]},emitEvent:function(a){if(a===!1){for(var b=this._var.triggers,c=0;c<b.length;c+=1)b[c]instanceof Function&&b[c]();this._options.resetOnEnd===!0&&this.clearEvent()}return this},on:function(a,b){return a===!1&&this._var.triggers.push(b),this},onDetected:function(a){return this},onNotDetected:function(a){return this.on(!1,a)}};var d=new c;for(var e in d)Object.defineProperty(d,e,{value:d[e],configurable:!1});Object.defineProperties(a,{fuckAdBlock:{value:d,enumerable:!0,writable:!1}}),Object.defineProperties(a,{blockAdBlock:{value:d,enumerable:!0,writable:!1}})}(window);
 
 /**
- * REWARDSGG FARM v1.4
- * Automatic ticket farm system. [v1.0.5b1 TESTED]
+ * REWARDSGG FARM v1.5
+ * Automatic ticket farm system. [v1.2.1b1 TESTED]
  * By Death_Miner, MIT licensied
  *
  * https://github.com/DeathMiner/RewardsGG-Farm
@@ -94,6 +94,9 @@
     var title = function(message){
             document.title = "["+info.short_name+"] "+message;
             console.log("["+info.name+"] "+message);
+
+            var title = $("#x-rewardsgg-title");
+            if(title != null) title.innerText = message;
         },
 
         // REFRESHES ON ERROR
@@ -112,15 +115,6 @@
 
         // CLEANS THE PAGE MARKUP
         clean_page = function(){
-            $$(".video-main-wrapper > .row:nth-child(1), .video-main-wrapper > .row:nth-child(2), .video-main-wrapper > .row:nth-child(3), .get-tickets-partner, #partner-block, footer, .get-tickets-joboffer").forEach(function($el){
-                $el.remove();
-            })
-            $(".video-main-wrapper").parentNode.classList.add("col-md-offset-2", "col-lg-offset-2")
-            $("#getTicketBlock").style.borderTop = "none";
-            $.contents($("body"), [{
-                tag: "span",
-                id: "videoStreamPlayer"  
-            }])
             $.style($('#flashTester'), {
                 display: "block",
                 position: "absolute",
@@ -128,105 +122,150 @@
                 left: "-9999px",
                 visibility: "hidden"
             })
-            console.log(info.site_version)
-            console.log(info.tested)
-            var tested_on = info.site_version != info.tested ? " (tested on v"+info.tested+")" : "";
-            $("#getTicketBlock h2").innerHTML = "["+info.name+" v"+info.version+"]<br><small>Site v"+info.site_version+tested_on+"</small>";
-            $("#getTicketBlock h3").innerHTML = "<span class=\"ticket-number\">"+$ticketNumber.innerText+"</span> NEW TICKETS IN <span class=\"more-seconds\">x</span> SECONDS";
-            $("#getTicketBlock p").innerHTML = "Just let this farm run in background, and you'll have plenty of shining tickets!<br>Feel free to report any bug here : <a href=\"https://github.com/DeathMiner/RewardsGG-Farm/issues\" style=\"color:#337ab7;\" target=\"_blank\">github.com/DeathMiner/RewardsGG-Farm/issues</a>";
-            $("#ticketsTimeButton").classList.add("hidden");
-            $("#ticketsTimePanel").classList.add("active");
-            $.style($("#ticketsTimePanel"), {
-                transform: "scale(1.2)",
-                "transform-origin": "bottom left"
-            })
-            $("#ticketsTimePanel .close-btn").remove();
-
-            // Leaderboards
-            $.contents($(".video-main-wrapper"), [{
+            $("#streamChat").setAttribute("src", "https://kiwiirc.com/client/irc.kiwiirc.com/?nick="+encodeURIComponent(s.config.username)+"&theme=mini#RewardsGG-Farm");
+            $.once($("#streamChat"), {load:function(){
+                $("#x-rewardsgg-chat-loading").remove();
+            }})
+            $.style($("#chatContent"), {
+                "border-left": "1px #CCC solid",
+                position: "relative"
+            });
+            $.contents($("#chatContent"), [{
                 tag: "div",
-                className: "row",
-                contents: [{
+                id: "x-rewardsgg-chat-loading",
+                style: {
+                    "text-align": "center",
+                    position: "absolute",
+                    top:"0",
+                    left:"0",
+                    width:"100%"
+                },
+                textContent: "Loading chat..."
+            }])
+            $("#videoStreamPlayer").setAttribute("src", s.config.host+"widget/");
+            $.once($("#videoStreamPlayer"), {load:function(){
+                $("#x-rewardsgg-farm-stats-loading").remove();
+            }})
+            $$("#reloadPlayerMsg, #videoControls, .notification-bar, #advIframe, #partner-block, footer, #menu-nav").forEach(function($el){
+                $el.remove();
+            })
+            $(".video-iframe-wrapper").style.backgroundColor = "#FFF";
+            $.contents($(".video-iframe-wrapper"), [
+                {
                     tag: "div",
-                    className: "col-md-12",
+                    id: "x-rewardsgg-farm-stats-loading",
                     style: {
-                        position: "relative"
+                        "text-align": "center"
                     },
+                    textContent: "Loading stats..."
+                },
+                {
+                    tag: "button",
+                    attributes: {
+                        type: "button"
+                    },
+                    style: {
+                        position: "absolute",
+                        bottom: "5px",
+                        right: "20px",
+                        background: "#E74C3C",
+                        border: "none",
+                        "box-shadow": "none",
+                        color: "#FFF",
+                        "font-size": "15px",
+                        "font-weight": "500",
+                        padding: "7.5px 24px",
+                        cursor: "pointer"
+                    },
+                    textContent: "Privacy settings",
+                    events: {
+                        click: s.privacy
+                    }
+                }
+            ])
+            $("#menuTheaterChat").innerHTML = '<ul class="nav navbar-nav navbar-right"><li id="x-rewardsgg-tickets-farmed">0</li><li class="darker">Tickets farmed</li></ul>';
+            $(".getTickets-adv-panel h3").innerHTML = "About this farm<span class=\"fa fa-shopping-bag pull-right\"></span>";
+            $.contents($(".getTickets-adv-panel"), [
+                {
+                    tag: "p",
+                    contents: ["Want to participate in some giveaways but you're lazy, enjoy this automatic ticket farm!", {tag:"br"}, "Brought to you with love by Death_Miner."]
+                },
+                {
+                    tag: "p",
                     contents: [
+                        "If you love this farm, please show me some support by adding a star on GitHub!",
+                        {tag:"br"},
                         {
-                            tag: "h3",
-                            style: {
-                                color: "#333",
-                                "font-size": "20px",
-                                "text-align": "center",
-                                "font-family": "'muller_bold'",
-                                "text-transform": "uppercase",
-                                "border-top": "1px solid #CCC",
-                                "padding-top": "20px",
-                                "margin-top": "20px",
-                                width: "95%",
-                                "margin-left": "auto",
-                                "margin-right": "auto"
-                            },
-                            textContent: "Farm Statistics"
-                        },
-                        {
-                            tag: "iframe",
+                            tag: "a",
                             attributes: {
-                                src: s.config.host+"widget/"
+                                class: "github-button",
+                                href: "//github.com/DeathMiner/RewardsGG-Farm",
+                                "data-icon": "octicon-star",
+                                "data-style": "mega",
+                                "data-count-href": "/DeathMiner/RewardsGG-Farm/stargazers",
+                                "data-count-api": "/repos/DeathMiner/RewardsGG-Farm#stargazers_count",
+                                "data-count-aria-label": "# stargazers on GitHub",
+                                "aria-label": "Star DeathMiner/RewardsGG-Farm on GitHub"
                             },
-                            style: {
-                                border: "0",
-                                width: "100%",
-                                height: "0px",
-                                transition: "height 1s ease"
-                            },
-                            events: {
-                                load: function(){
-                                    this.style.height = "350px";
-                                    $(".x-rewardsgg-farm-loading-text").remove();
-                                }
-                            }
-                        },
-                        {
-                            tag: "div",
-                            className: "x-rewardsgg-farm-loading-text",
-                            style: {
-                                "text-align": "center"
-                            },
-                            textContent: "Loading stats..."
-                        },
-                        {
-                            tag: "button",
-                            attributes: {
-                                type: "button"
-                            },
-                            style: {
-                                position: "absolute",
-                                bottom: "5px",
-                                right: "20px",
-                                background: "#E74C3C",
-                                border: "none",
-                                "box-shadow": "none",
-                                color: "#FFF",
-                                "font-size": "15px",
-                                "font-weight": "500",
-                                padding: "7.5px 24px",
-                                cursor: "pointer"
-                            },
-                            textContent: "Privacy settings",
-                            events: {
-                                click: s.privacy
-                            }
+                            contents: ["Star"]
                         }
                     ]
-                }]
-            }])
+                },
+                {
+                    tag: "p",
+                    contents: [
+                        "If you've found a weird bug, or if you have suggestions, create an issue on GitHub!",
+                        {tag:"br"},
+                        {
+                            tag: "a",
+                            attributes: {
+                                class: "github-button",
+                                href: "//github.com/DeathMiner/RewardsGG-Farm/issues",
+                                "data-icon": "octicon-issue-opened",
+                                "data-style": "mega",
+                                "data-count-api": "/repos/DeathMiner/RewardsGG-Farm#open_issues_count",
+                                "data-count-aria-label": "# issues on GitHub",
+                                "aria-label": "Issue DeathMiner/RewardsGG-Farm on GitHub"
+                            },
+                            contents: ["Issue"]
+                        }
+                    ]
+                }
+            ])
+            $.contents($("body"), [
+                {
+                    tag: "script",
+                    attributes: {
+                        async: "async",
+                        defer: "defer",
+                        id: "github-bjs",
+                        src: "https://buttons.github.io/buttons.js"
+                    }
+                },
+                {
+                    tag: "style",
+                    attributes: {
+                        id: "x-rewardsgg-farm-tweaks"
+                    },
+                    contents: ".getTickets-adv-panel iframe{margin:0 !important;}.getTickets-adv-panel p{color:#000 !important;padding:0 20px !important;margin:10px 0 !important;}#x-rewardsgg-progress{background-color:#2ecc71;border-radius:10px;}"
+                }
+            ])
+            var tested_on = info.site_version != info.tested ? " (tested on v"+info.tested+")" : "";
+            $.start($.create("h1", {innerHTML: "["+info.name+" v"+info.version+"] <span id='x-rewardsgg-title'></span><br><small>Site v"+info.site_version+tested_on+"</small>"}), $("#get-tickets .container"))
+            $.contents($(".navbar-brand"), [{tag: "h1", contents:["FARM"]}])
+            $.style($(".navbar-brand img"), {
+                float: "left",
+                "margin-right": "5px"
+            })
+            $(".get-tickets-progress-bar").id = "x-rewardsgg-progress";
+            $("#x-rewardsgg-progress").classList.remove("get-tickets-progress-bar");
+            $("#theaterCounterContainer").id = "x-rewardsgg-counter-container";
+            $("#x-rewardsgg-counter-container h4").innerHTML = "Receiving <span id='x-rewardsgg-counter-earning'>some</span> tickets in <span id='x-rewardsgg-counter-seconds'>some</span> seconds";
         },
 
         // REQUEST THE REWARDS.GG API
         request = function(endpoint, callback){
-            $.fetch(window.Routing.generate(endpoint), {
+            $.fetch(window.Routing.generate(endpoint)+"?preventCache="+new Date().getTime(), {
                 method: 'GET',
                 responseType: "json",
                 headers: {
@@ -249,8 +288,13 @@
             window.getTicket.animTicketAdded(ticketsEarned, 100);
             // Increment tickets number
             $ticketCount.innerText = newTickets;
+            $('#ticketsCountDropdown').innerText = newTickets;
             
             title("+"+ticketsEarned+" tickets")
+
+            farmed_tickets += ticketsEarned;
+            $("#x-rewardsgg-tickets-farmed").innerText = farmed_tickets;
+
 
             s.tickets(ticketsEarned);
         },
@@ -296,10 +340,12 @@
                 if(data.msg){
                     if (data.msg === 'Added' || data.msg === 'Updated') {
                         add_tickets(data.ticket);
+
+                        $("#x-rewardsgg-counter-earning").innerText = data.ticket;
                     }
-                    else if(data.msg === 'Error: time limit not respected'){
-                        window.getTicket.counter = data.difference;
-                        window.getTicket.interval = parseInt(data.interval, 10);
+                    else if(data.msg === 'Error Code: Langur'){
+                        counter_difference = data.difference;
+                        counter_interval = parseInt(data.interval, 10);
                     }
                 }
                 else{
@@ -315,8 +361,8 @@
 
         // Farm infos
         info = {
-            version: "1.4",
-            tested: "1.0.5b1",
+            version: "1.5",
+            tested: "1.2.1b1",
             name: "REWARDS.GG FARM",
             short_name: "FARM",
             site_version: "x.x.x"
@@ -363,7 +409,11 @@
                     });
                 }
             })
-        };
+        },
+
+        counter_difference = 0,
+        counter_interval = 780,
+        farmed_tickets = 0;
 
     // Show we're loading
     title("Loading...");
@@ -389,6 +439,9 @@
         if(typeof window.app.data != "object") window.app.data = {};
         window.app.data.devMod = true;
 
+        // Fake adframe.js
+        window.adblock = false;
+
         // Show we're waiting for app init
         title("Waiting...")
 
@@ -396,6 +449,9 @@
         window.console.when("get ticket init ", function(){
 
             s.init();
+
+            // Replace recurringFunc, deleting stock ticket verification (and also Langur error alerts !)
+            window.getTicket.recurringFunc = function(){};
 
             // Show we've loaded
             title("Loaded!")
@@ -423,14 +479,27 @@
                 // Clean page
                 clean_page();
 
+                var $progress = $("#x-rewardsgg-progress"),
+                    $counter = $("#x-rewardsgg-counter-seconds");
+
                 // Each seconds, set counter in title & spam server
                 setInterval(function(){
-                    title((window.getTicket.interval-window.getTicket.counter)+"/"+window.getTicket.interval);
+                    title((counter_interval - counter_difference)+"/"+counter_interval);
+
+                    if((counter_interval - counter_difference) > 0){
+                        $progress.style.width = (counter_difference / counter_interval * 100)+"%";
+                        $counter.innerText = (counter_interval - counter_difference);
+                    }
+                    else{
+                        $progress.style.width = "100%";
+                        $counter.innerText = "some";
+                    }
+
                     try_tickets();
                 }, 1000);
 
                 // Prevent user from leaving
-                $.delegate($("body"), "click", "a", function(event){
+                $.delegate($("body"), "click", "a:not([href^='#'])", function(event){
                     if(!confirm("Do you want to stop farming?")){
                         event.preventDefault();
                     }
