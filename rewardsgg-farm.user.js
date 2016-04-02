@@ -121,7 +121,7 @@
             })
             $("#streamChat").setAttribute("src", "https://kiwiirc.com/client/irc.kiwiirc.com/?nick="+encodeURIComponent(s.config.username)+"&theme=mini#RewardsGG-Farm");
             $.once($("#streamChat"), {load:function(){
-                $("#xRewardsGGFarmChatLoading").remove();
+                $("#x-rewardsgg-chat-loading").remove();
             }})
             $.style($("#chatContent"), {
                 "border-left": "1px #CCC solid",
@@ -129,7 +129,7 @@
             });
             $.contents($("#chatContent"), [{
                 tag: "div",
-                id: "xRewardsGGFarmChatLoading",
+                id: "x-rewardsgg-chat-loading",
                 style: {
                     "text-align": "center",
                     position: "absolute",
@@ -141,7 +141,7 @@
             }])
             $("#videoStreamPlayer").setAttribute("src", s.config.host+"widget/");
             $.once($("#videoStreamPlayer"), {load:function(){
-                $("#xRewardsGGFarmStatsLoading").remove();
+                $("#x-rewardsgg-farm-stats-loading").remove();
             }})
             $$("#reloadPlayerMsg, #videoControls, .notification-bar, #advIframe, #partner-block, footer, #menu-nav").forEach(function($el){
                 $el.remove();
@@ -150,7 +150,7 @@
             $.contents($(".video-iframe-wrapper"), [
                 {
                     tag: "div",
-                    id: "xRewardsGGFarmStatsLoading",
+                    id: "x-rewardsgg-farm-stats-loading",
                     style: {
                         "text-align": "center"
                     },
@@ -180,7 +180,7 @@
                     }
                 }
             ])
-            $("#menuTheaterChat").innerHTML = '<ul class="nav navbar-nav navbar-right"><li id="xRewardsGGFarmTicketsFarmed">0</li><li class="darker">Tickets farmed</li></ul>';
+            $("#menuTheaterChat").innerHTML = '<ul class="nav navbar-nav navbar-right"><li id="x-rewardsgg-tickets-farmed">0</li><li class="darker">Tickets farmed</li></ul>';
             $(".getTickets-adv-panel h3").innerHTML = "About this farm<span class=\"fa fa-shopping-bag pull-right\"></span>";
             $.contents($(".getTickets-adv-panel"), [
                 {
