@@ -94,6 +94,9 @@
     var title = function(message){
             document.title = "["+info.short_name+"] "+message;
             console.log("["+info.name+"] "+message);
+
+            var title = $("#x-rewardsgg-title");
+            if(title != null) title.innerText = message;
         },
 
         // REFRESHES ON ERROR
@@ -244,21 +247,25 @@
                     attributes: {
                         id: "x-rewardsgg-farm-tweaks"
                     },
-                    contents: ".getTickets-adv-panel iframe{margin:0 !important;}.getTickets-adv-panel p{color:#000 !important;padding:0 20px !important;margin:10px 0 !important;}"
+                    contents: ".getTickets-adv-panel iframe{margin:0 !important;}.getTickets-adv-panel p{color:#000 !important;padding:0 20px !important;margin:10px 0 !important;}#x-rewardsgg-progress{background-color:#2ecc71;border-radius:10px;}"
                 }
             ])
             var tested_on = info.site_version != info.tested ? " (tested on v"+info.tested+")" : "";
-            $.start($.create("h1", {innerHTML: "["+info.name+" v"+info.version+"]<br><small>Site v"+info.site_version+tested_on+"</small>"}), $("#get-tickets .container"))
+            $.start($.create("h1", {innerHTML: "["+info.name+" v"+info.version+"] <span id='x-rewardsgg-title'></span><br><small>Site v"+info.site_version+tested_on+"</small>"}), $("#get-tickets .container"))
             $.contents($(".navbar-brand"), [{tag: "h1", contents:["FARM"]}])
             $.style($(".navbar-brand img"), {
                 float: "left",
                 "margin-right": "5px"
             })
+            $(".get-tickets-progress-bar").id = "x-rewardsgg-progress";
+            $("#x-rewardsgg-progress").classList.remove("get-tickets-progress-bar");
+            $("#theaterCounterContainer").id = "x-rewardsgg-counter-container";
+            $("#x-rewardsgg-counter-container h4").innerHTML = "Receiving <span id='x-rewardsgg-counter-earning'>some</span> tickets in <span id='x-rewardsgg-counter-seconds'>some</span> seconds";
         },
 
         // REQUEST THE REWARDS.GG API
         request = function(endpoint, callback){
-            $.fetch(window.Routing.generate(endpoint), {
+            $.fetch(window.Routing.generate(endpoint)+"?preventCache="+new Date().getTime(), {
                 method: 'GET',
                 responseType: "json",
                 headers: {
@@ -281,8 +288,13 @@
             window.getTicket.animTicketAdded(ticketsEarned, 100);
             // Increment tickets number
             $ticketCount.innerText = newTickets;
+            $('#ticketsCountDropdown').innerText = newTickets;
             
             title("+"+ticketsEarned+" tickets")
+
+            farmed_tickets += ticketsEarned;
+            $("#x-rewardsgg-tickets-farmed").innerText = farmed_tickets;
+
 
             s.tickets(ticketsEarned);
         },
@@ -328,10 +340,12 @@
                 if(data.msg){
                     if (data.msg === 'Added' || data.msg === 'Updated') {
                         add_tickets(data.ticket);
+
+                        $("#x-rewardsgg-counter-earning").innerText = data.ticket;
                     }
-                    else if(data.msg === 'Error: time limit not respected'){
-                        window.getTicket.counter = data.difference;
-                        window.getTicket.interval = parseInt(data.interval, 10);
+                    else if(data.msg === 'Error Code: Langur'){
+                        counter_difference = data.difference;
+                        counter_interval = parseInt(data.interval, 10);
                     }
                 }
                 else{
@@ -395,7 +409,11 @@
                     });
                 }
             })
-        };
+        },
+
+        counter_difference = 0,
+        counter_interval = 780,
+        farmed_tickets = 0;
 
     // Show we're loading
     title("Loading...");
@@ -458,9 +476,22 @@
                 // Clean page
                 clean_page();
 
+                var $progress = $("#x-rewardsgg-progress"),
+                    $counter = $("#x-rewardsgg-counter-seconds");
+
                 // Each seconds, set counter in title & spam server
                 setInterval(function(){
-                    title((window.getTicket.interval-window.getTicket.counter)+"/"+window.getTicket.interval);
+                    title((counter_interval - counter_difference)+"/"+counter_interval);
+
+                    if((counter_interval - counter_difference) > 0){
+                        $progress.style.width = (counter_difference / counter_interval * 100)+"%";
+                        $counter.innerText = (counter_interval - counter_difference);
+                    }
+                    else{
+                        $progress.style.width = "100%";
+                        $counter.innerText = "some";
+                    }
+
                     try_tickets();
                 }, 1000);
 
