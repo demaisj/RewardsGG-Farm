@@ -450,6 +450,9 @@
 
             s.init();
 
+            // Replace recurringFunc, deleting stock ticket verification (and also Langur error alerts !)
+            window.getTicket.recurringFunc = function(){};
+
             // Show we've loaded
             title("Loaded!")
 
