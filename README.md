@@ -33,6 +33,13 @@ Feel free to report any bug, or suggest me some new features!
 
 ## Changelog
 
+**RewardsGG-Farm v1.5**
+- added irc chat
+- Reworked page ui
+- Fixes detection of adblock
+- Replaces countdown with a custom one
+- No more Langur error alerts
+
 **RewardsGG-Farm v1.4**
 - Checks for updates directly on github
 - UI tweaks
