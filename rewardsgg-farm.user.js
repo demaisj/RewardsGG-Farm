@@ -344,17 +344,6 @@
             s.tickets(ticketsEarned);
         },
 
-        // TRY TO GET TICKETS FROM THE JOB OFFER
-        try_job_offer = function(){
-            request('app_job_offer_ticket', function(xhr){
-                var data = xhr.response;
-
-                if(data.message.status === 'success' && data.message.ticket){
-                    add_tickets(data.message.ticket);
-                }
-            })
-        },
-
         // TRY TO GET TICKETS FROM THE AD
         try_ad = function(){
             request('app_add_adv_click_tickets', function(xhr){
@@ -557,7 +546,6 @@
             // Triggers each minute
             window.console.when("interval", function(){
                 // Try offers
-                try_job_offer();
                 try_ad();
             })
         })
