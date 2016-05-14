@@ -163,13 +163,37 @@
                 },
                 textContent: "Loading chat..."
             }])
-            $("#videoStreamPlayer").setAttribute("src", s.config.host+"widget/");
-            $.once($("#videoStreamPlayer"), {load:function(){
-                $("#x-rewardsgg-farm-stats-loading").remove();
-            }})
-            $$("#reloadPlayerMsg, #videoControls, .notification-bar, #advIframe, #partner-block, footer, #menu-nav").forEach(function($el){
+            $$("#reloadPlayerMsg, #videoControls, .notification-bar, #advIframe, #partner-block, footer, #menu-nav, #videoStreamPlayer, #advChat, #videoSoonMsg, #dingitPlayer").forEach(function($el){
                 $el.remove();
             })
+            $.contents($("body"), [{
+                tag: "div",
+                id: "videoStreamPlayer",
+                style: {
+                    position: "absolute",
+                    top:"-9999px",
+                    left:"-9999px"
+                }
+            }])
+            $.contents($(".video-iframe-wrapper"), [{
+                tag: "iframe",
+                id: "x-rewardsgg-farm-stats",
+                attributes: {
+                    frameborder: "0",
+                    allowfullscreen: "true",
+                    webkitallowfullscreen: "true",
+                    mozallowfullscreen: "true",
+                    title: "RewardsGG-Stats",
+                    width:"100%",
+                    height:"100%",
+                    src: s.config.host+"widget/"
+                },
+                once: {
+                    load: function(){
+                        $("#x-rewardsgg-farm-stats-loading").remove();
+                    }
+                }
+            }])
             $(".video-iframe-wrapper").style.backgroundColor = "#FFF";
             $.contents($(".video-iframe-wrapper"), [
                 {
