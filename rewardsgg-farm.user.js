@@ -47,39 +47,60 @@
 
     // Save previous console
     var previousConsole = window.console || {},
-        events = {};
+        events = {},
+        newConsole = {};
 
-    // Replace console with custom one
-    window.console = {
-
+    // Create a new read-only console
+    Object.defineProperties(newConsole, {
         // Log
-        log:function(msg){
-            events[msg] && events[msg]();
-            previousConsole.log && previousConsole.log(msg);
+        "log": {
+            writable: false,
+            value: function(msg){
+                events[msg] && events[msg]();
+                previousConsole.log && previousConsole.log(msg);
+            }
         },
 
         // Warning
-        warn:function(msg){
-            events[msg] && events[msg]();
-           previousConsole.warn && previousConsole.warn(msg);
+        "warn": {
+            writable: false,
+            value: function(msg){
+                events[msg] && events[msg]();
+                previousConsole.warn && previousConsole.warn(msg);
+            }
         },
 
         // Error
-        error:function(msg){
-            events[msg] && events[msg]();
-            previousConsole.error && previousConsole.error(msg);
+        "error": {
+            writable: false,
+            value: function(msg){
+                events[msg] && events[msg]();
+                previousConsole.error && previousConsole.error(msg);
+            }
         },
 
         // When => Callback when a specific message was logged
-        when: function(msg, callback){
-            events[msg] = callback;
+        "when": {
+            writable: false,
+            value:  function(msg, callback){
+                events[msg] = callback;
+            }
         },
 
         // Disable callback for this message
-        off: function(msg){
-            delete events[msg];
+        "off": {
+            writable: false,
+            value:  function(msg){
+                delete events[msg];
+            }
         }
-    }
+    });
+
+    // Save the console
+    Object.defineProperty(window, 'console', {
+        writable: true,
+        value: newConsole
+    });
 })(window);
 
 // ------------
