@@ -1,5 +1,5 @@
 # RewardsGG-Farm
-[![Maintenance](https://img.shields.io/maintenance/yes/2016.svg)]() [![GitHub release](https://img.shields.io/github/release/DeathMiner/RewardsGG-Farm.svg)](https://github.com/DeathMiner/RewardsGG-Farm/releases/latest) [![Tested on](https://img.shields.io/badge/tested%20on-v1.2.1b1-orange.svg)]() [![Visit our IRC channel](https://kiwiirc.com/buttons/irc.kiwiirc.com/RewardsGGFarm.png)](https://kiwiirc.com/client/irc.kiwiirc.com/?&theme=mini#RewardsGGFarm)
+[![Maintenance](https://img.shields.io/maintenance/yes/2016.svg)]() [![GitHub release](https://img.shields.io/github/release/DeathMiner/RewardsGG-Farm.svg)](https://github.com/DeathMiner/RewardsGG-Farm/releases/latest) [![Tested on](https://img.shields.io/badge/tested%20on-v1.4.1b1-orange.svg)]() [![Visit our IRC channel](https://kiwiirc.com/buttons/irc.kiwiirc.com/RewardsGGFarm.png)](https://kiwiirc.com/client/irc.kiwiirc.com/?&theme=mini#RewardsGGFarm)
 
 Want to participate in some giveaways but you're lazy, enjoy this automatic ticket farm!
 
@@ -32,6 +32,11 @@ This script is updating automatically, you don't need to go & check updates by y
 Feel free to report any bug, or suggest me some new features!
 
 ## Changelog
+
+**RewardsGG-Farm v1.6**
+- Read-Only console: the farm no longer freeze when loading
+- Cleaned up page: Less requests excecuted by background code
+- Removed job offer: feature removed from website
 
 **RewardsGG-Farm v1.5**
 - added irc chat
