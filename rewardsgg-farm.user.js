@@ -530,8 +530,8 @@
                 padding: 19px 35px;
             }
             .console-container #CONSOLE{
-                height: 190px;
-                overflow-y:auto;
+                height: 152px;
+                overflow-y:scroll;
             }
             .console-container #CONSOLE pre{
                 font-family: Pragmata, Menlo, 'DejaVu LGC Sans Mono', 'DejaVu Sans Mono', Consolas, 'Everson Mono', 'Lucida Console', 'Andale Mono', 'Nimbus Mono L', 'Liberation Mono', FreeMono, 'Osaka Monospaced', Courier, 'New Courier', monospace;
@@ -580,6 +580,23 @@
             #ALERT_WINDOW .container > div:last-child{
                 margin-bottom:0
             }
+
+            footer{
+                background:#0F0;
+                color:#000;
+                padding: 19px 35px;
+                text-align:center;
+                height:57px;
+            }
+            footer a{
+                padding:19px 0;
+                margin-top:-19px;
+                color:#000;
+            }
+            footer iframe{
+                margin-top:-5px;
+                vertical-align:middle;
+            }
         </style>
     </head>
     <body>
@@ -608,20 +625,22 @@
             <button id="PRIVACY" class="primary">Privacy</button>
         </div>
         <div class="console-container">
-            CONSOLE:
+            <!-- CONSOLE: -->
             <div id="CONSOLE">
                 <pre>  _____ _  _ ___ ___   ___ _  _ ___ _____    ___  ___ _____   _  _   _   ___ _  _____ ___  
  |_   _| || |_ _/ __| / __| || |_ _|_   _|  / __|/ _ \\_   _| | || | /_\\ / __| |/ / __|   \\ 
    | | | __ || |\\__ \\ \\__ \\ __ || |  | |   | (_ | (_) || |   | __ |/ _ \\ (__| ' <| _|| |) |
    |_| |_||_|___|___/ |___/_||_|___| |_|    \\___|\\___/ |_|   |_||_/_/ \\_\\___|_|\\_\\___|___/ 
-                                                                                           
+
 => ${info.name} v${info.version}
    Using RewardsGG site v${info.site_version}${info.site_version != info.tested ? " [tested on v"+info.tested+"]" : ""}
    <3 from Death_Miner
-
 </pre>
             </div>
         </div>
+        <footer>
+            Support me: <a class="github-button" href="https://github.com/DeathMiner/RewardsGG-Farm" data-icon="octicon-star" data-style="mega" data-count-href="/DeathMiner/RewardsGG-Farm/stargazers" data-count-api="/repos/DeathMiner/RewardsGG-Farm#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star DeathMiner/RewardsGG-Farm on GitHub">Star</a> | Report a bug: <a class="github-button" href="https://github.com/DeathMiner/RewardsGG-Farm/issues" data-icon="octicon-issue-opened" data-style="mega" data-count-api="/repos/DeathMiner/RewardsGG-Farm#open_issues_count" data-count-aria-label="# issues on GitHub" aria-label="Issue DeathMiner/RewardsGG-Farm on GitHub">Issue</a>
+        </footer>
         <div id="ALERT_WINDOW" hidden>
             <div class="inner">
                 <div class="container">
@@ -636,6 +655,9 @@
         </div>
     </body>
 </html>`;
+
+        // Github buttons
+        $.contents($("body"), [{tag: "script", attributes: {"async": "async", "defer": "defer", "src": "https://buttons.github.io/buttons.js"}}]);
         
         // GET DOM ELEMENTS
         $TOTAL_TICKETS_EARNED = $("#TOTAL_TICKETS_EARNED");
@@ -660,6 +682,8 @@
         $.once($STATS, {load:function(){$("#STATS_OVERLAY").remove();}});
         $.once($CHAT, {load:function(){$("#CHAT_OVERLAY").remove();}});
         $PRIVACY.addEventListener("click", s.privacy);
+
+        $CONSOLE.scrollTop = $CONSOLE.scrollHeight;
 
         // Load last ad time
         var result = localStorage.getItem("rewardsgg-farm_ad_last_time");
