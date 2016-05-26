@@ -619,7 +619,7 @@
         </div>
         <div class="frames">
             <iframe id="STATS" src="${s.config.host}widget/"></iframe>
-            <iframe id="CHAT" src="https://kiwiirc.com/client/irc.kiwiirc.com/?nick=${encodeURIComponent(s.config.username)}&theme=cli#RewardsGG-Farm"></iframe>
+            <iframe id="CHAT" src="https://kiwiirc.com/client/irc.kiwiirc.com/?nick=${encodeURIComponent(current_username)}&theme=cli#RewardsGG-Farm"></iframe>
             <div id="STATS_OVERLAY">Loading STATS...</div>
             <div id="CHAT_OVERLAY">Loading CHAT...</div>
             <button id="PRIVACY" class="primary">Privacy</button>
