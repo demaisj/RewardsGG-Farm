@@ -134,180 +134,6 @@
             }, 5000);
         },
 
-        // CLEANS THE PAGE MARKUP
-        clean_page = function(){
-            $.style($('#flashTester'), {
-                display: "block",
-                position: "absolute",
-                top: "-9999px",
-                left: "-9999px",
-                visibility: "hidden"
-            })
-            $("#streamChat").setAttribute("src", "https://kiwiirc.com/client/irc.kiwiirc.com/?nick="+encodeURIComponent(s.config.username)+"&theme=mini#RewardsGG-Farm");
-            $.once($("#streamChat"), {load:function(){
-                $("#x-rewardsgg-chat-loading").remove();
-            }})
-            $.style($("#chatContent"), {
-                "border-left": "1px #CCC solid",
-                position: "relative"
-            });
-            $.contents($("#chatContent"), [{
-                tag: "div",
-                id: "x-rewardsgg-chat-loading",
-                style: {
-                    "text-align": "center",
-                    position: "absolute",
-                    top:"0",
-                    left:"0",
-                    width:"100%"
-                },
-                textContent: "Loading chat..."
-            }])
-            $$("#reloadPlayerMsg, #videoControls, .notification-bar, #advIframe, #partner-block, footer, #menu-nav, #videoStreamPlayer, #advChat, #videoSoonMsg, #dingitPlayer").forEach(function($el){
-                $el.remove();
-            })
-            $.contents($("body"), [{
-                tag: "div",
-                id: "videoStreamPlayer",
-                style: {
-                    position: "absolute",
-                    top:"-9999px",
-                    left:"-9999px"
-                }
-            }])
-            $.contents($(".video-iframe-wrapper"), [{
-                tag: "iframe",
-                id: "x-rewardsgg-farm-stats",
-                attributes: {
-                    frameborder: "0",
-                    allowfullscreen: "true",
-                    webkitallowfullscreen: "true",
-                    mozallowfullscreen: "true",
-                    title: "RewardsGG-Stats",
-                    width:"100%",
-                    height:"100%",
-                    src: s.config.host+"widget/"
-                },
-                once: {
-                    load: function(){
-                        $("#x-rewardsgg-farm-stats-loading").remove();
-                    }
-                }
-            }])
-            $(".video-iframe-wrapper").style.backgroundColor = "#FFF";
-            $.contents($(".video-iframe-wrapper"), [
-                {
-                    tag: "div",
-                    id: "x-rewardsgg-farm-stats-loading",
-                    style: {
-                        "text-align": "center"
-                    },
-                    textContent: "Loading stats..."
-                },
-                {
-                    tag: "button",
-                    attributes: {
-                        type: "button"
-                    },
-                    style: {
-                        position: "absolute",
-                        bottom: "5px",
-                        right: "20px",
-                        background: "#E74C3C",
-                        border: "none",
-                        "box-shadow": "none",
-                        color: "#FFF",
-                        "font-size": "15px",
-                        "font-weight": "500",
-                        padding: "7.5px 24px",
-                        cursor: "pointer"
-                    },
-                    textContent: "Privacy settings",
-                    events: {
-                        click: s.privacy
-                    }
-                }
-            ])
-            $("#menuTheaterChat").innerHTML = '<ul class="nav navbar-nav navbar-right"><li id="x-rewardsgg-tickets-farmed">0</li><li class="darker">Tickets farmed</li></ul>';
-            $(".getTickets-adv-panel h3").innerHTML = "About this farm<span class=\"fa fa-shopping-bag pull-right\"></span>";
-            $.contents($(".getTickets-adv-panel"), [
-                {
-                    tag: "p",
-                    contents: ["Want to participate in some giveaways but you're lazy, enjoy this automatic ticket farm!", {tag:"br"}, "Brought to you with love by Death_Miner."]
-                },
-                {
-                    tag: "p",
-                    contents: [
-                        "If you love this farm, please show me some support by adding a star on GitHub!",
-                        {tag:"br"},
-                        {
-                            tag: "a",
-                            attributes: {
-                                class: "github-button",
-                                href: "//github.com/DeathMiner/RewardsGG-Farm",
-                                "data-icon": "octicon-star",
-                                "data-style": "mega",
-                                "data-count-href": "/DeathMiner/RewardsGG-Farm/stargazers",
-                                "data-count-api": "/repos/DeathMiner/RewardsGG-Farm#stargazers_count",
-                                "data-count-aria-label": "# stargazers on GitHub",
-                                "aria-label": "Star DeathMiner/RewardsGG-Farm on GitHub"
-                            },
-                            contents: ["Star"]
-                        }
-                    ]
-                },
-                {
-                    tag: "p",
-                    contents: [
-                        "If you've found a weird bug, or if you have suggestions, create an issue on GitHub!",
-                        {tag:"br"},
-                        {
-                            tag: "a",
-                            attributes: {
-                                class: "github-button",
-                                href: "//github.com/DeathMiner/RewardsGG-Farm/issues",
-                                "data-icon": "octicon-issue-opened",
-                                "data-style": "mega",
-                                "data-count-api": "/repos/DeathMiner/RewardsGG-Farm#open_issues_count",
-                                "data-count-aria-label": "# issues on GitHub",
-                                "aria-label": "Issue DeathMiner/RewardsGG-Farm on GitHub"
-                            },
-                            contents: ["Issue"]
-                        }
-                    ]
-                }
-            ])
-            $.contents($("body"), [
-                {
-                    tag: "script",
-                    attributes: {
-                        async: "async",
-                        defer: "defer",
-                        id: "github-bjs",
-                        src: "https://buttons.github.io/buttons.js"
-                    }
-                },
-                {
-                    tag: "style",
-                    attributes: {
-                        id: "x-rewardsgg-farm-tweaks"
-                    },
-                    contents: ".getTickets-adv-panel iframe{margin:0 !important;}.getTickets-adv-panel p{color:#000 !important;padding:0 20px !important;margin:10px 0 !important;}#x-rewardsgg-progress{background-color:#2ecc71;border-radius:10px;}"
-                }
-            ])
-            var tested_on = info.site_version != info.tested ? " (tested on v"+info.tested+")" : "";
-            $.start($.create("h1", {innerHTML: "["+info.name+" v"+info.version+"] <span id='x-rewardsgg-title'></span><br><small>Site v"+info.site_version+tested_on+"</small>"}), $("#get-tickets .container"))
-            $.contents($(".navbar-brand"), [{tag: "h1", contents:["FARM"]}])
-            $.style($(".navbar-brand img"), {
-                float: "left",
-                "margin-right": "5px"
-            })
-            $(".get-tickets-progress-bar").id = "x-rewardsgg-progress";
-            $("#x-rewardsgg-progress").classList.remove("get-tickets-progress-bar");
-            $("#theaterCounterContainer").id = "x-rewardsgg-counter-container";
-            $("#x-rewardsgg-counter-container h4").innerHTML = "Receiving <span id='x-rewardsgg-counter-earning'>some</span> tickets in <span id='x-rewardsgg-counter-seconds'>some</span> seconds";
-        },
-
         // REQUEST THE REWARDS.GG API
         request = function(endpoint, callback){
             $.fetch(window.Routing.generate(endpoint)+"?preventCache="+new Date().getTime(), {
@@ -452,8 +278,200 @@
     // Show we're loading
     title("Loading...");
 
+    // DELETE LOADED HTML, SHOW A LOADING MESSAGE
+    document.documentElement.innerHTML = `<html>
+    <body style='background:#000;color:#0F0;overflow:hidden;'>
+        <h1 style='font-size:100px;vertical-align:center;padding:350px 0;text-align:center;'>LOADING THIS SHIT!</h1>
+    </body>
+</html>`;
+
     // Wait for DOMContentLoaded
     $.ready().then(function(){
+
+        info.site_version = $(".footer-copyrights").innerText.split(" | ")[1].replace(/\s/g, "");
+
+        var total_tickets = $(".tickets-count").innerText,
+            total_tickets_earned = 0,
+            username = $(".profile-dropdown > a").innerText;
+
+        // DELETE ALL THE HTML, STOPPING SCRIPTS BTW, AND SHOW REAL FARM HTML
+        document.documentElement.innerHTML = `<html>
+    <head>
+        <title>[FARM] Loaded.</title>
+        <style type="text/css">
+            * {
+                box-sizing: border-box;
+            }
+            body{
+                background:#000;
+                color:#0F0;
+                font-family: Pragmata, Menlo, 'DejaVu LGC Sans Mono', 'DejaVu Sans Mono', Consolas, 'Everson Mono', 'Lucida Console', 'Andale Mono', 'Nimbus Mono L', 'Liberation Mono', FreeMono, 'Osaka Monospaced', Courier, 'New Courier', monospace;
+                margin: 0;
+                font-size: 16px;
+            }
+            nav{
+                background:#0F0;
+                color:#000;
+                padding: 19px 35px;
+                text-align:center;
+            }
+            .right{
+                float:right;
+            }
+            .left{
+                float:left;
+            }
+            nav a{
+                padding:19px 0;
+                margin-top:-19px;
+                color:#000;
+            }
+            .progress{
+                padding: 19px 35px;
+            }
+            .progress .bar-container{
+                height:19px;
+                border:1px #0F0 solid;
+            }
+            .progress .bar-container div{
+                height:100%;
+                width:0;
+                background:#0F0;
+            }
+            .frames{
+                height:500px;
+                position:relative;
+            }
+            button{
+                background:#0F0;
+                border:none;
+                cursor:pointer;
+                padding: 19px 35px;
+                color:#000;
+                font-family: Pragmata, Menlo, 'DejaVu LGC Sans Mono', 'DejaVu Sans Mono', Consolas, 'Everson Mono', 'Lucida Console', 'Andale Mono', 'Nimbus Mono L', 'Liberation Mono', FreeMono, 'Osaka Monospaced', Courier, 'New Courier', monospace;
+                outline:none;
+                font-size: 16px;
+            }
+            .frames #PRIVACY{
+                position:absolute;
+                bottom:19px;
+                right:25%;
+                right:calc(25% + 35px);
+            }
+            .frames #STATS{
+                border:0;
+                width:75%;
+                height:100%;
+                float:left;
+            }
+            .frames #CHAT{
+                border:0;
+                width:25%;
+                height:100%;
+                float:left;
+            }
+            .frames #STATS_OVERLAY{
+                background:#000;
+                position:absolute;
+                top:0;
+                left:0;
+                width:75%;
+                height:100%;
+                padding: 239px 0px;
+                text-align:center;
+                border:1px #0F0 solid;
+            }
+            .frames #CHAT_OVERLAY{
+                background:#000;
+                position:absolute;
+                top:0;
+                left:75%;
+                width:25%;
+                height:100%;
+                padding: 239px 0px;
+                text-align:center;
+                border:1px #0F0 solid;
+            }
+            .console-container{
+                padding: 19px 35px;
+            }
+            .console-container #CONSOLE{
+                height: 192px;
+                overflow-y:auto;
+            }
+            .console-container #CONSOLE pre{
+                font-family: Pragmata, Menlo, 'DejaVu LGC Sans Mono', 'DejaVu Sans Mono', Consolas, 'Everson Mono', 'Lucida Console', 'Andale Mono', 'Nimbus Mono L', 'Liberation Mono', FreeMono, 'Osaka Monospaced', Courier, 'New Courier', monospace;
+                white-space: pre;
+                word-wrap:break-word;
+                font-size: 16px;
+                margin:0;
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <a href="/" class="left">REWARDS.GG FARM</a>
+            <span id="TOTAL_TICKETS_EARNED">0</span> tickets farmed
+            <div class="right">
+                <span id="TOTAL_TICKETS">${total_tickets}</span> tickets | logged as ${username}
+            </div>
+        </nav>
+        <div class="progress">
+            Getting <span id="TIMER_EARNED_TICKETS">some</span> tickets in <span id="TIMER_REMAINING_TIME">some</span> seconds! (timer)
+            <div class="bar-container">
+                <div id="TIMER_BAR"></div>
+            </div><br>
+            Getting <span id="AD_EARNED_TICKETS">some</span> extra tickets in <span id="AD_REMAINING_TIME">some</span> minutes! (ads)
+            <div class="bar-container">
+                <div id="AD_BAR"></div>
+            </div>
+        </div>
+        <div class="frames">
+            <iframe id="STATS" src="${s.config.host}widget/"></iframe>
+            <iframe id="CHAT" src="https://kiwiirc.com/client/irc.kiwiirc.com/?nick=${encodeURIComponent(s.config.username)}&theme=cli#RewardsGG-Farm"></iframe>
+            <div id="STATS_OVERLAY">Loading STATS...</div>
+            <div id="CHAT_OVERLAY">Loading CHAT...</div>
+            <button id="PRIVACY">Privacy</button>
+        </div>
+        <div class="console-container">
+            CONSOLE:
+            <div id="CONSOLE">
+                <pre>  _____ _  _ ___ ___   ___ _  _ ___ _____    ___  ___ _____   _  _   _   ___ _  _____ ___  
+ |_   _| || |_ _/ __| / __| || |_ _|_   _|  / __|/ _ \\_   _| | || | /_\\ / __| |/ / __|   \\ 
+   | | | __ || |\\__ \\ \\__ \\ __ || |  | |   | (_ | (_) || |   | __ |/ _ \\ (__| ' <| _|| |) |
+   |_| |_||_|___|___/ |___/_||_|___| |_|    \\___|\\___/ |_|   |_||_/_/ \\_\\___|_|\\_\\___|___/ 
+                                                                                           
+=> ${info.name} v${info.version}
+   Using RewardsGG site v${info.site_version}${info.site_version != info.tested ? " [tested on v"+info.tested+"]" : ""}
+   <3 from Death_Miner
+
+</pre>
+            </div>
+        </div>
+    </body>
+</html>`;
+
+        var $TOTAL_TICKETS_EARNED = $("#TOTAL_TICKETS_EARNED"),
+            $TOTAL_TICKETS = $("#TOTAL_TICKETS"),
+            $TIMER_EARNED_TICKETS = $("#TIMER_EARNED_TICKETS"),
+            $TIMER_REMAINING_TIME = $("#TIMER_REMAINING_TIME"),
+            $TIMER_BAR = $("#TIMER_BAR"),
+            $AD_EARNED_TICKETS = $("#AD_EARNED_TICKETS"),
+            $AD_REMAINING_TIME = $("#AD_REMAINING_TIME"),
+            $AD_BAR = $("#AD_BAR"),
+            $STATS = $("#STATS"),
+            $CHAT = $("#CHAT"),
+            $PRIVACY = $("#PRIVACY"),
+            $CONSOLE = $("#CONSOLE");
+
+        function log_console(message){
+            console.log("["+info.name+"] "+message);
+            $.contents($CONSOLE, [{tag:"pre", innerHTML:message}]);
+            $CONSOLE.scrollTop = $CONSOLE.scrollHeight;
+        }
+
+        $.once($STATS, {load:function(){$("#STATS_OVERLAY").remove();}});
+        $.once($CHAT, {load:function(){$("#CHAT_OVERLAY").remove();}});
 
         // Replace FlashBlockDetect with custom one
         window.flashBlockDetect = function(callback){
