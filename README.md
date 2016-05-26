@@ -1,5 +1,5 @@
 # RewardsGG-Farm
-[![Maintenance](https://img.shields.io/maintenance/yes/2016.svg)]() [![GitHub release](https://img.shields.io/github/release/DeathMiner/RewardsGG-Farm.svg)](https://github.com/DeathMiner/RewardsGG-Farm/releases/latest) [![Tested on](https://img.shields.io/badge/tested%20on-v1.4.1b1-orange.svg)]() [![Visit our IRC channel](https://kiwiirc.com/buttons/irc.kiwiirc.com/RewardsGGFarm.png)](https://kiwiirc.com/client/irc.kiwiirc.com/?&theme=mini#RewardsGGFarm)
+[![Maintenance](https://img.shields.io/maintenance/yes/2016.svg)]() [![GitHub release](https://img.shields.io/github/release/DeathMiner/RewardsGG-Farm.svg)](https://github.com/DeathMiner/RewardsGG-Farm/releases/latest) [![Tested on](https://img.shields.io/badge/tested%20on-v1.4.2b6-orange.svg)]() [![Visit our IRC channel](https://kiwiirc.com/buttons/irc.kiwiirc.com/RewardsGGFarm.png)](https://kiwiirc.com/client/irc.kiwiirc.com/?&theme=mini#RewardsGGFarm)
 
 Want to participate in some giveaways but you're lazy, enjoy this automatic ticket farm!
 
@@ -28,10 +28,21 @@ This script is updating automatically, you don't need to go & check updates by y
 - Go to **Get Tickets**
 - Let the magic happen
 
+## Screenshots
+![screen](https://cloud.githubusercontent.com/assets/2797696/15590725/697a84de-2399-11e6-8d39-8b5abea78e55.png)
+
 ## Issues
 Feel free to report any bug, or suggest me some new features!
 
 ## Changelog
+
+**RewardsGG-Farm v2.0**
+- Brand new design, give less chances for the farm to be broken
+- New Ad progress bar
+- New console that shows the history of the activity of the farm
+- The farm is completely independant & indetectable
+- The farm is loading faster
+- Some vulgarity because f**k off
 
 **RewardsGG-Farm v1.6**
 - Read-Only console: the farm no longer freeze when loading
