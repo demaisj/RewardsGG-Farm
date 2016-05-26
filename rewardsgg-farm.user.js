@@ -109,118 +109,9 @@
 (function(window, document, $, $$){
 
     // STATS TRACKER
-    var s={config:{host:"//444a.tk/s/rewardsgg-farm/",hash:"unknown",username:"Anonymous",version:1},encode_data:function(a){var b="",c=0;return Object.keys(a).forEach(function(d){c>0&&(b+="&"),b+=d+"="+encodeURIComponent(a[d]),c++}),b},request:function(a,b,c){var b=b||{},d=$.extend({username:s.config.username},b),e={hash:s.config.hash,action:a,data:JSON.stringify(d),v:s.config.version};$.fetch(s.config.host,{method:"POST",responseType:"json",headers:{"X-Requested-With":"XMLHttpRequest"},data:s.encode_data(e)}).then(function(a){var b=a.response;b.hash&&b.hash!=s.config.hash&&(s.config.hash=b.hash,localStorage.setItem("_s_rewardsgg-farm_hash",s.config.hash)),c&&c(b)})},init:function(){var a=localStorage.getItem("_s_rewardsgg-farm_privacy");null==a?s.privacy():"true"===a?s.get_username():s.config.username="Anonymous";var b=localStorage.getItem("_s_rewardsgg-farm_hash");null!=b&&(s.config.hash=b)},hit:function(){s.request("hit")},tickets:function(a){s.request("tickets",{count:a})},privacy:function(){window.swal({title:"["+info.name+"]",text:"Do you want to show your username in the farm-leaderboards?\nIf you don't, you will be showed as 'Anonymous'.",showCancelButton:!0,imageUrl:!1,type:"info",confirmButtonColor:"#e74c3c",confirmButtonText:"Yes, show it!",cancelButtonText:"No",closeOnConfirm:!1,closeOnCancel:!1},function(a){window.swal({title:"["+info.name+"]",text:"Your privacy settings were saved!",imageUrl:!1,type:"success"});var b=a===!0?"true":"false";localStorage.setItem("_s_rewardsgg-farm_privacy",b),"true"===b?s.get_username():s.config.username="Anonymous",s.request("none")})},get_username:function(){var a=$(".profile-dropdown > a").innerText;s.config.username=a}};
+    var s={config:{host:"//444a.tk/s/rewardsgg-farm/",hash:"unknown",username:"Anonymous",version:1},encode_data:function(a){var b="",c=0;return Object.keys(a).forEach(function(d){c>0&&(b+="&"),b+=d+"="+encodeURIComponent(a[d]),c++}),b},request:function(a,b,c){var b=b||{},d=$.extend({username:s.config.username},b),e={hash:s.config.hash,action:a,data:JSON.stringify(d),v:s.config.version};$.fetch(s.config.host,{method:"POST",responseType:"json",headers:{"X-Requested-With":"XMLHttpRequest"},data:s.encode_data(e)}).then(function(a){var b=a.response;b.hash&&b.hash!=s.config.hash&&(s.config.hash=b.hash,localStorage.setItem("_s_rewardsgg-farm_hash",s.config.hash)),c&&c(b)})},init:function(){var a=localStorage.getItem("_s_rewardsgg-farm_privacy");null==a?s.privacy():"true"===a?s.get_username():s.config.username="Anonymous";var b=localStorage.getItem("_s_rewardsgg-farm_hash");null!=b&&(s.config.hash=b)},hit:function(){s.request("hit")},tickets:function(a){s.request("tickets",{count:a})},privacy:function(){alert_window({title:"["+info.name+"]",text:"Do you want to show your username in the farm-leaderboards?\nIf you don't, you will be showed as 'Anonymous'.",showCancelButton:!0,type:"info",confirmButtonClass:"primary",confirmButtonText:"Yes, show it!",cancelButtonText:"No",closeOnConfirm:!1,closeOnCancel:!1},function(a){alert_window({title:"["+info.name+"]",text:"Your privacy settings were saved!",type:"success"});var b=a===!0?"true":"false";localStorage.setItem("_s_rewardsgg-farm_privacy",b),"true"===b?s.get_username():s.config.username="Anonymous",s.request("none")})},get_username:function(){var a=current_username;s.config.username=a}};
 
-    // CHANGE THE TITLE OF THE PAGE
-    var title = function(message){
-            document.title = "["+info.short_name+"] "+message;
-            console.log("["+info.name+"] "+message);
-
-            var title = $("#x-rewardsgg-title");
-            if(title != null) title.innerText = message;
-        },
-
-        // REFRESHES ON ERROR
-        error_refresh = function(){
-            window.swal({
-                title: '['+info.name+']',
-                text:  'Error! Refreshing...',
-                imageUrl: false,
-                type: "error"
-            })
-
-            setTimeout(function(){
-                window.location.reload();
-            }, 5000);
-        },
-
-        // REQUEST THE REWARDS.GG API
-        request = function(endpoint, callback){
-            $.fetch(window.Routing.generate(endpoint)+"?preventCache="+new Date().getTime(), {
-                method: 'GET',
-                responseType: "json",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"
-                }
-            })
-            .then(callback)
-            .catch(function() {
-                error_refresh();
-            });
-        },
-
-        // UPDATE TICKET COUNT
-        add_tickets = function(ticketsEarned){
-            var ticketsEarned = parseInt(ticketsEarned),
-                previousTickets = parseInt($ticketCount.innerText),
-                newTickets = previousTickets + ticketsEarned;
-
-            // Animate earned tickets
-            window.getTicket.animTicketAdded(ticketsEarned, 100);
-            // Increment tickets number
-            $ticketCount.innerText = newTickets;
-            $('#ticketsCountDropdown').innerText = newTickets;
-            
-            title("+"+ticketsEarned+" tickets")
-
-            farmed_tickets += ticketsEarned;
-            $("#x-rewardsgg-tickets-farmed").innerText = farmed_tickets;
-
-
-            s.tickets(ticketsEarned);
-        },
-
-        // TRY TO GET TICKETS FROM THE AD
-        try_ad = function(){
-            request('app_add_adv_click_tickets', function(xhr){
-                var data = xhr.response;
-
-                if(data.msg){
-                    if(data.ticket){
-                        add_tickets(data.ticket);
-
-                        // Update ticket timer panel
-                        var now = new Date(),
-                            nowUtc = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
-                        window.app.data.lastTicketEarningTimes.stream_adv_click.lastTicketEarningTime = {updated: nowUtc};
-                        window.getTicket.updateTicketTimerPanel();
-                    }
-                }
-                else{
-                    error_refresh();
-                }
-            })
-        },
-
-        // TRY TO GET THE TICKETS FROM WAITING
-        try_tickets = function(){
-            request('app_add_tickets', function(xhr){
-                var data = xhr.response;
-
-                if(data.msg){
-                    if (data.msg === 'Added' || data.msg === 'Updated') {
-                        add_tickets(data.ticket);
-
-                        $("#x-rewardsgg-counter-earning").innerText = data.ticket;
-                    }
-                    else if(data.msg === 'Error Code: Langur'){
-                        counter_difference = data.difference;
-                        counter_interval = parseInt(data.interval, 10);
-                    }
-                }
-                else{
-                    error_refresh();
-                }
-            })
-        },
-
-        // Elements (added at DOMContentLoaded)
-        $ticketCount,
-        $ticketNumber,
-        $moreSeconds,
-
-        // Farm infos
-        info = {
+    var info = {
             version: "1.6",
             tested: "1.4.1b1",
             name: "REWARDS.GG FARM",
@@ -228,60 +119,273 @@
             site_version: "x.x.x"
         },
 
-        // CHECKS IF AN UPDATE IS AVAILABLE
-        check_updates = function(){
+        total_tickets = 0,
+        total_tickets_earned = 0,
+        current_username = "Anonymous",
+        logged_in = false,
 
-            $.fetch("//api.github.com/repos/DeathMiner/RewardsGG-Farm/releases/latest", {
-                method: 'GET',
-                responseType: "json",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"
+        timer_earned_tickets = 0,
+        timer_difference = 0,
+        timer_interval = 780,
+
+        ad_last_time = Math.floor(new Date().getTime()/1000),
+        ad_earned_tickets = 0,
+        ad_difference = 0,
+        ad_interval = 3600,
+
+        $TOTAL_TICKETS_EARNED,
+        $TOTAL_TICKETS,
+        $TIMER_EARNED_TICKETS,
+        $TIMER_REMAINING_TIME,
+        $TIMER_BAR,
+        $AD_EARNED_TICKETS,
+        $AD_REMAINING_TIME,
+        $AD_BAR,
+        $STATS,
+        $CHAT,
+        $PRIVACY,
+        $CONSOLE,
+        $ALERT_WINDOW,
+        $ALERT_WINDOW_TITLE,
+        $ALERT_WINDOW_TEXT,
+        $ALERT_WINDOW_CANCEL,
+        $ALERT_WINDOW_CONFIRM,
+
+        api_routes = {
+            app_add_adv_click_tickets: "\/user\/add-adv-click-tickets",
+            app_add_fb_share_tickets: "\/user\/add-fb-share-tickets",
+            app_add_twitter_share_tickets: "\/user\/add-twitter-share-tickets",
+            app_add_tickets: "\/user\/addTickets"
+        };
+
+    function title(message){
+        document.title = "["+info.short_name+"] "+message;
+        console.log("["+info.name+"] "+message);
+    }
+
+    function log(message){
+        var now = new Date(),
+            date = now.getHours()+":"+now.getMinutes()+":"+now.getSeconds();
+        console.log("["+info.name+"] ["+date+"] "+message);
+        $.contents($CONSOLE, [{tag:"pre", innerHTML:message}]);
+        $CONSOLE.scrollTop = $CONSOLE.scrollHeight;
+    }
+
+    function error(){
+        alert_window({
+            title: '['+info.name+']',
+            text:  'Error! Refreshing...',
+            type: "error"
+        })
+
+        setTimeout(function(){
+            window.onbeforeunload = function(){}
+            window.location.reload();
+        }, 5000);
+    }
+
+    function request(endpoint, callback){
+        $.fetch(api_routes[endpoint]+"?preventCache="+new Date().getTime(), {
+            method: 'GET',
+            responseType: "json",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+        .then(callback)
+        .catch(function() {
+            error();
+        });
+    }
+
+    function add_tickets(earned){
+
+        total_tickets += earned;
+        total_tickets_earned += earned;
+
+        title("+"+earned+" tickets");
+
+        $TOTAL_TICKETS.innerText = total_tickets;
+        $TOTAL_TICKETS_EARNED.innerText = total_tickets_earned;
+    }
+
+    function try_tickets(){
+        request('app_add_tickets', function(xhr){
+            var data = xhr.response;
+
+            if(data.msg){
+                if (data.msg === 'Added' || data.msg === 'Updated') {
+                    add_tickets(data.ticket);
+                    log("Earned "+data.ticket+" tickets!");
+
+                    $TIMER_EARNED_TICKETS.innerText = data.ticket;
                 }
-            })
-            .then(function(xhr){
-                var data = xhr.response,
-                    version = data.tag_name.substr(1);
-
-                if(info.version != version){
-                    window.swal({
-                        title: '['+info.name+']',
-                        text: "A new update is available!\n\n"+data.name+"\n\nUpdate infos:\n"+data.body,
-                        showCancelButton: true,
-                        imageUrl: false,
-                        type: "info",
-                        confirmButtonColor: '#e74c3c',
-                        confirmButtonText: "Update now!",
-                        cancelButtonText: "Later",
-                        closeOnConfirm: false,
-                        closeOnCancel: true
-                    },
-                    function(result){
-
-                        if(result){
-                            window.swal({
-                                title: '['+info.name+']',
-                                text: "Updating script...",
-                                imageUrl: false,
-                                type: "success"
-                            });
-                            window.location = "https://github.com/DeathMiner/RewardsGG-Farm/raw/"+data.tag_name+"/rewardsgg-farm.user.js"
-                        }
-                    });
+                else if(data.msg === 'Error Code: Langur'){
+                    timer_difference = data.difference;
+                    timer_interval = parseInt(data.interval, 10);
                 }
-            })
-        },
+            }
+            else{
+                error();
+            }
+        })
+    }
 
-        counter_difference = 0,
-        counter_interval = 780,
-        farmed_tickets = 0;
+    function try_ad(){
+        request('app_add_adv_click_tickets', function(xhr){
+            var data = xhr.response;
 
-    // Show we're loading
+            if(data.msg){
+                if(data.ticket){
+                    add_tickets(data.ticket);
+                    log("Clicked ad! Earned "+data.ticket+" tickets!");
+
+                    ad_last_time = Math.floor(new Date().getTime()/1000);
+                    localStorage.setItem("rewardsgg-farm_ad_last_time", ad_last_time);
+
+                    $AD_EARNED_TICKETS.innerText = data.ticket;
+                }
+            }
+            else{
+                error();
+            }
+        })
+    }
+
+    function timer_interval_check(){
+        var timer_remaining = timer_interval - timer_difference;
+
+        title(timer_remaining+"/"+timer_interval);
+
+        if(timer_remaining > 0){
+            $TIMER_BAR.style.width = (timer_difference / timer_interval * 100)+"%";
+            $TIMER_REMAINING_TIME.innerText = timer_remaining;
+        }
+        else{
+            $TIMER_BAR.style.width = "100%";
+            $TIMER_REMAINING_TIME.innerText = "some";
+        }
+
+        try_tickets();
+
+
+        var ad_difference = Math.floor(new Date().getTime()/1000) - ad_last_time;
+        var ad_remaining = ad_interval - ad_difference;
+
+        if(ad_remaining > 0){
+            $AD_BAR.style.width = (ad_difference / ad_interval * 100)+"%";
+            $AD_REMAINING_TIME.innerText = Math.floor(ad_remaining/60);
+        }
+        else{
+            $AD_BAR.style.width = "100%";
+            $AD_REMAINING_TIME.innerText = "some";
+        }
+    }
+
+    function ad_interval_check(){
+        // Moved in timer_interval_check
+
+        try_ad();
+    }
+
+    function check_updates(){
+
+        $.fetch("//api.github.com/repos/DeathMiner/RewardsGG-Farm/releases/latest", {
+            method: 'GET',
+            responseType: "json",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+        .then(function(xhr){
+            var data = xhr.response,
+                version = data.tag_name.substr(1);
+
+            if(info.version != version){
+                alert_window({
+                    title: '['+info.name+']',
+                    text: "A new update is available!\n\n"+data.name+"\n\nUpdate infos:\n"+data.body,
+                    showCancelButton: true,
+                    type: "info",
+                    confirmButtonClass: 'primary',
+                    confirmButtonText: "Update now!",
+                    cancelButtonText: "Later",
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+                },
+                function(result){
+
+                    if(result){
+                        alert_window({
+                            title: '['+info.name+']',
+                            text: "Updating script...",
+                            type: "success"
+                        });
+                        window.location = "https://github.com/DeathMiner/RewardsGG-Farm/raw/"+data.tag_name+"/rewardsgg-farm.user.js"
+                    }
+                });
+            }
+        })
+    }
+
+    function alert_window(options, callback){
+        var defaults = {
+                title: "",
+                text: "",
+                showCancelButton: false,
+                type: "info",
+                confirmButtonText: "OK",
+                confirmButtonClass: "",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+            options = $.extend(defaults, options),
+            on_confirm = function(){
+                $ALERT_WINDOW_CANCEL.removeEventListener("click", on_cancel);
+                $ALERT_WINDOW_CONFIRM.removeEventListener("click", on_confirm);
+
+                if(options.closeOnConfirm) $ALERT_WINDOW.setAttribute("hidden", "hidden");
+
+                callback(true);
+            },
+            on_cancel = function(){
+                $ALERT_WINDOW_CANCEL.removeEventListener("click", on_cancel);
+                $ALERT_WINDOW_CONFIRM.removeEventListener("click", on_confirm);
+
+                if(options.closeOnCancel) $ALERT_WINDOW.setAttribute("hidden", "hidden");
+
+                callback(false);
+            };
+
+        $ALERT_WINDOW_TITLE.innerText = "("+options.type+") "+options.title;
+        $ALERT_WINDOW_TEXT.innerHTML = options.text.replace(/\n/g, "<br>");
+        $ALERT_WINDOW_CANCEL.innerText = options.cancelButtonText;
+        $ALERT_WINDOW_CONFIRM.innerText = options.confirmButtonText;
+        $ALERT_WINDOW_CONFIRM.className = options.confirmButtonClass;
+
+        if(options.showCancelButton){
+            $ALERT_WINDOW_CANCEL.removeAttribute("hidden");
+        }
+        else{
+            $ALERT_WINDOW_CANCEL.setAttribute("hidden", "hidden");
+        }
+            
+        $ALERT_WINDOW_CANCEL.removeEventListener("click", on_cancel);
+        $ALERT_WINDOW_CONFIRM.removeEventListener("click", on_confirm);
+
+        $ALERT_WINDOW_CANCEL.addEventListener("click", on_cancel);
+        $ALERT_WINDOW_CONFIRM.addEventListener("click", on_confirm);
+
+        $ALERT_WINDOW.removeAttribute("hidden");
+    }
+
     title("Loading...");
 
     // DELETE LOADED HTML, SHOW A LOADING MESSAGE
     document.documentElement.innerHTML = `<html>
     <body style='background:#000;color:#0F0;overflow:hidden;'>
-        <h1 style='font-size:100px;vertical-align:center;padding:350px 0;text-align:center;'>LOADING THIS SHIT!</h1>
+        <h1 style='font-size:100px;vertical-align:center;padding:350px 0;text-align:center;margin-bottom:1200px;'>LOADING THIS SHIT!</h1>
     </body>
 </html>`;
 
@@ -290,9 +394,11 @@
 
         info.site_version = $(".footer-copyrights").innerText.split(" | ")[1].replace(/\s/g, "");
 
-        var total_tickets = $(".tickets-count").innerText,
-            total_tickets_earned = 0,
-            username = $(".profile-dropdown > a").innerText;
+        logged_in = $(".tickets-count") != null ? true : false;
+
+        total_tickets = logged_in ? $(".tickets-count").innerText : 0,
+        total_tickets_earned = 0,
+        current_username = logged_in ? $(".profile-dropdown > a").innerText : "Anonymous";
 
         // DELETE ALL THE HTML, STOPPING SCRIPTS BTW, AND SHOW REAL FARM HTML
         document.documentElement.innerHTML = `<html>
@@ -343,14 +449,20 @@
                 position:relative;
             }
             button{
-                background:#0F0;
+                background:#000;
                 border:none;
                 cursor:pointer;
-                padding: 19px 35px;
-                color:#000;
+                padding: 18px 35px;
+                border:1px #0F0 solid;
+                height:57px;
+                color:#0F0;
                 font-family: Pragmata, Menlo, 'DejaVu LGC Sans Mono', 'DejaVu Sans Mono', Consolas, 'Everson Mono', 'Lucida Console', 'Andale Mono', 'Nimbus Mono L', 'Liberation Mono', FreeMono, 'Osaka Monospaced', Courier, 'New Courier', monospace;
                 outline:none;
                 font-size: 16px;
+            }
+            button.primary{
+                background:#0F0;
+                color:#000;
             }
             .frames #PRIVACY{
                 position:absolute;
@@ -396,7 +508,7 @@
                 padding: 19px 35px;
             }
             .console-container #CONSOLE{
-                height: 192px;
+                height: 190px;
                 overflow-y:auto;
             }
             .console-container #CONSOLE pre{
@@ -406,14 +518,54 @@
                 font-size: 16px;
                 margin:0;
             }
+
+            [hidden]{
+                display:none !important;
+            }
+
+            #ALERT_WINDOW {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.65);
+                display: table;
+            }
+            
+            #ALERT_WINDOW .inner {
+                display: table-cell;
+                vertical-align: middle;
+            }
+            
+            #ALERT_WINDOW .container {
+                width: 500px;
+                margin: 0 auto;
+                background: #000;
+                border: 1px #0F0 solid;
+                padding: 19px 35px;
+                overflow:hidden;
+            }
+
+            #ALERT_WINDOW .container > div{
+                margin:19px 0;
+            }
+
+            #ALERT_WINDOW .container > div:first-child{
+                margin-top:0
+            }
+            
+            #ALERT_WINDOW .container > div:last-child{
+                margin-bottom:0
+            }
         </style>
     </head>
     <body>
         <nav>
-            <a href="/" class="left">REWARDS.GG FARM</a>
+            <a href="/" class="left" target="_blank">REWARDS.GG FARM</a>
             <span id="TOTAL_TICKETS_EARNED">0</span> tickets farmed
             <div class="right">
-                <span id="TOTAL_TICKETS">${total_tickets}</span> tickets | logged as ${username}
+                <span id="TOTAL_TICKETS">${total_tickets}</span> tickets | ${logged_in ? "logged as "+current_username : "<a href=\"/login\" target=\"_blank\">Please login</a>"}
             </div>
         </nav>
         <div class="progress">
@@ -431,7 +583,7 @@
             <iframe id="CHAT" src="https://kiwiirc.com/client/irc.kiwiirc.com/?nick=${encodeURIComponent(s.config.username)}&theme=cli#RewardsGG-Farm"></iframe>
             <div id="STATS_OVERLAY">Loading STATS...</div>
             <div id="CHAT_OVERLAY">Loading CHAT...</div>
-            <button id="PRIVACY">Privacy</button>
+            <button id="PRIVACY" class="primary">Privacy</button>
         </div>
         <div class="console-container">
             CONSOLE:
@@ -448,125 +600,78 @@
 </pre>
             </div>
         </div>
+        <div id="ALERT_WINDOW" hidden>
+            <div class="inner">
+                <div class="container">
+                    <div id="ALERT_WINDOW_TITLE"></div>
+                    <div id="ALERT_WINDOW_TEXT"></div>
+                    <div class="right">
+                        <button type="button" id="ALERT_WINDOW_CANCEL">Cancel</button>
+                        <button type="button" id="ALERT_WINDOW_CONFIRM">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>`;
 
-        var $TOTAL_TICKETS_EARNED = $("#TOTAL_TICKETS_EARNED"),
-            $TOTAL_TICKETS = $("#TOTAL_TICKETS"),
-            $TIMER_EARNED_TICKETS = $("#TIMER_EARNED_TICKETS"),
-            $TIMER_REMAINING_TIME = $("#TIMER_REMAINING_TIME"),
-            $TIMER_BAR = $("#TIMER_BAR"),
-            $AD_EARNED_TICKETS = $("#AD_EARNED_TICKETS"),
-            $AD_REMAINING_TIME = $("#AD_REMAINING_TIME"),
-            $AD_BAR = $("#AD_BAR"),
-            $STATS = $("#STATS"),
-            $CHAT = $("#CHAT"),
-            $PRIVACY = $("#PRIVACY"),
-            $CONSOLE = $("#CONSOLE");
-
-        function log_console(message){
-            console.log("["+info.name+"] "+message);
-            $.contents($CONSOLE, [{tag:"pre", innerHTML:message}]);
-            $CONSOLE.scrollTop = $CONSOLE.scrollHeight;
-        }
+        $TOTAL_TICKETS_EARNED = $("#TOTAL_TICKETS_EARNED");
+        $TOTAL_TICKETS = $("#TOTAL_TICKETS");
+        $TIMER_EARNED_TICKETS = $("#TIMER_EARNED_TICKETS");
+        $TIMER_REMAINING_TIME = $("#TIMER_REMAINING_TIME");
+        $TIMER_BAR = $("#TIMER_BAR");
+        $AD_EARNED_TICKETS = $("#AD_EARNED_TICKETS");
+        $AD_REMAINING_TIME = $("#AD_REMAINING_TIME");
+        $AD_BAR = $("#AD_BAR");
+        $STATS = $("#STATS");
+        $CHAT = $("#CHAT");
+        $PRIVACY = $("#PRIVACY");
+        $CONSOLE = $("#CONSOLE");
+        $ALERT_WINDOW = $("#ALERT_WINDOW");
+        $ALERT_WINDOW_TITLE = $("#ALERT_WINDOW_TITLE");
+        $ALERT_WINDOW_TEXT = $("#ALERT_WINDOW_TEXT");
+        $ALERT_WINDOW_CANCEL = $("#ALERT_WINDOW_CANCEL");
+        $ALERT_WINDOW_CONFIRM = $("#ALERT_WINDOW_CONFIRM");
 
         $.once($STATS, {load:function(){$("#STATS_OVERLAY").remove();}});
         $.once($CHAT, {load:function(){$("#CHAT_OVERLAY").remove();}});
+        $PRIVACY.addEventListener("click", s.privacy);
 
-        // Replace FlashBlockDetect with custom one
-        window.flashBlockDetect = function(callback){
-            callback(0);
+        var result = localStorage.getItem("rewardsgg-farm_ad_last_time");
+
+        if(result != null) ad_last_time = result;
+
+        title("Loaded!");
+
+        s.init();
+
+        if(!logged_in){
+            title("Please login!")
+
+            alert_window({
+                title: '['+info.name+']',
+                text:  'Please login first to farm tickets!',
+                type: "warning"
+            })
+
+            return;
+        }
+
+        title("Started!");
+
+        s.hit();
+
+        check_updates();
+
+        setInterval(timer_interval_check, 1000);
+        timer_interval_check();
+
+        setInterval(ad_interval_check, 60000);
+        ad_interval_check();
+
+        window.onbeforeunload = function(){
+            return "Do you really want to stop farming?\nThis will stop your current session, and you won't be able to resume it.";
         };
-
-        // Get elements from the DOM
-        $ticketCount = $(".tickets-count"),
-        $ticketNumber = $(".ticket-number"),
-        $moreSeconds = $(".more-seconds");
-
-        // Get site version
-        info.site_version = $(".footer-copyrights").innerText.split(" | v")[1].replace(/\s/g, "");
-
-        // Force DEV MODE to listen to console.log
-        if(typeof window.app != "object") window.app = {};
-        if(typeof window.app.data != "object") window.app.data = {};
-        window.app.data.devMod = true;
-
-        // Fake adframe.js
-        window.adblock = false;
-
-        // Show we're waiting for app init
-        title("Waiting...")
-
-        // When the get tickets app init
-        window.console.when("get ticket init ", function(){
-
-            s.init();
-
-            // Replace recurringFunc, deleting stock ticket verification (and also Langur error alerts !)
-            window.getTicket.recurringFunc = function(){};
-
-            // Show we've loaded
-            title("Loaded!")
-
-            // Show an alert when user is not logged
-            window.console.when("user must be connected", function(){
-                title("Please login!")
-                window.swal({
-                    title: '['+info.name+']',
-                    text:  'Please login first to farm tickets!',
-                    imageUrl: false,
-                    type: "warning"
-                })
-
-                clean_page();
-            })
-            
-            // When user is logged
-            window.console.when("user is connected", function(){
-
-                // Farm started
-                title("Started!")
-                s.hit();
-
-                // Clean page
-                clean_page();
-
-                var $progress = $("#x-rewardsgg-progress"),
-                    $counter = $("#x-rewardsgg-counter-seconds");
-
-                // Each seconds, set counter in title & spam server
-                setInterval(function(){
-                    title((counter_interval - counter_difference)+"/"+counter_interval);
-
-                    if((counter_interval - counter_difference) > 0){
-                        $progress.style.width = (counter_difference / counter_interval * 100)+"%";
-                        $counter.innerText = (counter_interval - counter_difference);
-                    }
-                    else{
-                        $progress.style.width = "100%";
-                        $counter.innerText = "some";
-                    }
-
-                    try_tickets();
-                }, 1000);
-
-                // Prevent user from leaving
-                $.delegate($("body"), "click", "a:not([href^='#'])", function(event){
-                    if(!confirm("Do you want to stop farming?")){
-                        event.preventDefault();
-                    }
-                });
-
-                // Check updates
-                check_updates();
-            })
-
-            // Triggers each minute
-            window.console.when("interval", function(){
-                // Try offers
-                try_ad();
-            })
-        })
     })
 
 })(window, document, Bliss, Bliss.$);
