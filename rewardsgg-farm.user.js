@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         RewardsGG Farm [v1.4.2b6 TESTED]
 // @namespace    https://github.com/DeathMiner/RewardsGG-Farm
-// @version      2.0
+// @version      2.1
 // @description  Want to participate in some giveaways but you're lazy, enjoy this automatic ticket farm!
 // @author       Death_Miner
 // @license      MIT
@@ -113,7 +113,7 @@
 
     // GLOBAL VARIABLES
     var info = { // Info about this farm
-            version: "2.0",
+            version: "2.1",
             tested: "1.4.2b6",
             name: "REWARDS.GG FARM",
             short_name: "FARM",
@@ -207,9 +207,10 @@
 
     // Update tickets counts
     function add_tickets(earned){
+        var count = parseInt(earned, 10);
 
-        total_tickets += earned;
-        total_tickets_earned += earned;
+        total_tickets += count;
+        total_tickets_earned += count;
 
         title("+"+earned+" tickets");
 
@@ -418,7 +419,7 @@
         // We are logged in when there is the ticket count
         logged_in = $(".tickets-count") != null ? true : false;
 
-        total_tickets = logged_in ? $(".tickets-count").innerText : 0;
+        total_tickets = logged_in ? parseInt($(".tickets-count").innerText, 10) : 0;
         total_tickets_earned = 0;
         current_username = logged_in ? $(".profile-dropdown > a").innerText : "Anonymous";
 
@@ -442,6 +443,8 @@
                 color:#000;
                 padding: 19px 35px;
                 text-align:center;
+                max-width:1280px;
+                margin:0 auto;
             }
             .right{
                 float:right;
@@ -456,6 +459,8 @@
             }
             .progress{
                 padding: 19px 35px;
+                max-width:1280px;
+                margin:0 auto;
             }
             .progress .bar-container{
                 height:19px;
@@ -469,6 +474,8 @@
             .frames{
                 height:500px;
                 position:relative;
+                max-width:1280px;
+                margin:0 auto;
             }
             button{
                 background:#000;
@@ -528,6 +535,8 @@
             }
             .console-container{
                 padding: 19px 35px;
+                max-width:1280px;
+                margin:0 auto;
             }
             .console-container #CONSOLE{
                 height: 152px;
@@ -587,6 +596,8 @@
                 padding: 19px 35px;
                 text-align:center;
                 height:57px;
+                max-width:1280px;
+                margin:0 auto;
             }
             footer a{
                 padding:19px 0;
