@@ -36,6 +36,10 @@ Feel free to report any bug, or suggest me some new features!
 
 ## Changelog
 
+**RewardsGG-Farm v2.1**
+- Fixed bug showing wrong ticket count
+- UI tweaks
+
 **RewardsGG-Farm v2.0**
 - Brand new design, give less chances for the farm to be broken
 - New Ad progress bar
