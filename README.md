@@ -36,6 +36,9 @@ Feel free to report any bug, or suggest me some new features!
 
 ## Changelog
 
+**RewardsGG-Farm v2.2.2**
+- Fixed missing tracking for ticket stats
+
 **RewardsGG-Farm v2.2.1**
 - No changes, I just fucked up my update system by messing with the tags. This update is to fix the update alert always opening. Sorry m8s. RT if you cry everytiem.
 
