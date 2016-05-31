@@ -1,5 +1,5 @@
 # RewardsGG-Farm
-[![Maintenance](https://img.shields.io/maintenance/yes/2016.svg)]() [![GitHub release](https://img.shields.io/github/release/DeathMiner/RewardsGG-Farm.svg)](https://github.com/DeathMiner/RewardsGG-Farm/releases/latest) [![Tested on](https://img.shields.io/badge/tested%20on-v1.4.2b6-orange.svg)]() [![Visit our IRC channel](https://kiwiirc.com/buttons/irc.kiwiirc.com/RewardsGGFarm.png)](https://kiwiirc.com/client/irc.kiwiirc.com/?&theme=mini#RewardsGGFarm)
+[![Maintenance](https://img.shields.io/maintenance/yes/2016.svg)]() [![GitHub release](https://img.shields.io/github/release/DeathMiner/RewardsGG-Farm.svg)](https://github.com/DeathMiner/RewardsGG-Farm/releases/latest) [![Tested on](https://img.shields.io/badge/tested%20on-v1.4.2b8-orange.svg)]() [![Visit our IRC channel](https://kiwiirc.com/buttons/irc.kiwiirc.com/RewardsGGFarm.png)](https://kiwiirc.com/client/irc.kiwiirc.com/?&theme=mini#RewardsGGFarm)
 
 Want to participate in some giveaways but you're lazy, enjoy this automatic ticket farm!
 
