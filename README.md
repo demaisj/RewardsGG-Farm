@@ -36,6 +36,10 @@ Feel free to report any bug, or suggest me some new features!
 
 ## Changelog
 
+**RewardsGG-Farm v2.2**
+- STATS NOW WORKING!
+- Reseted Privacy settings for new/old users
+
 **RewardsGG-Farm v2.1**
 - Fixed bug showing wrong ticket count
 - UI tweaks
