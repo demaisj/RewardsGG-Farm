@@ -152,6 +152,7 @@
         $ALERT_WINDOW_TEXT,
         $ALERT_WINDOW_CANCEL,
         $ALERT_WINDOW_CONFIRM,
+        $TICKET_DOLLAR_VALUE,
 
         // Ajax routes
         api_routes = {
@@ -216,6 +217,8 @@
 
         $TOTAL_TICKETS.innerText = total_tickets;
         $TOTAL_TICKETS_EARNED.innerText = total_tickets_earned;
+
+        $TICKET_DOLLAR_VALUE.innerText = ticket_to_dollar(total_tickets);
         
         // Track ticket count on stats
         s.tickets(count);
@@ -403,6 +406,16 @@
         $ALERT_WINDOW_CONFIRM.addEventListener("click", on_confirm);
 
         $ALERT_WINDOW.removeAttribute("hidden");
+    }
+
+    // Convert ticket count to Dollar currency (EXPERIMENTAL)
+    function ticket_to_dollar(total){
+
+        // For now we can say 98540 tickets correspond to ~7.99$
+        var dollar = (total*7.99)/98540;
+
+        // We round for reading pruposes
+        return dollar.toFixed(2);
     }
 
     title("Loading...");
@@ -611,6 +624,10 @@
                 margin-top:-5px;
                 vertical-align:middle;
             }
+            span[title]{
+                border-bottom:1px #000 dashed;
+                cursor: help;
+            }
         </style>
     </head>
     <body>
@@ -618,7 +635,7 @@
             <a href="/" class="left" target="_blank">REWARDS.GG FARM</a>
             <span id="TOTAL_TICKETS_EARNED">0</span> tickets farmed
             <div class="right">
-                <span id="TOTAL_TICKETS">${total_tickets}</span> tickets | ${logged_in ? "logged as "+current_username : "<a href=\"/login\" target=\"_blank\">Please login</a>"}
+                <span id="TOTAL_TICKETS">${total_tickets}</span> tickets <span title="Notice: This ticket to dollar conversion is experimental.">(~<span id="TICKET_DOLLAR_VALUE">${ticket_to_dollar(total_tickets)}</span>$)</span> | ${logged_in ? "logged as "+current_username : "<a href=\"/login\" target=\"_blank\">Please login</a>"}
             </div>
         </nav>
         <div class="progress">
@@ -691,6 +708,7 @@
         $ALERT_WINDOW_TEXT = $("#ALERT_WINDOW_TEXT");
         $ALERT_WINDOW_CANCEL = $("#ALERT_WINDOW_CANCEL");
         $ALERT_WINDOW_CONFIRM = $("#ALERT_WINDOW_CONFIRM");
+        $TICKET_DOLLAR_VALUE = $("#TICKET_DOLLAR_VALUE");
 
         // Set events
         $.once($STATS, {load:function(){$("#STATS_OVERLAY").remove();}});
