@@ -670,7 +670,7 @@
             </div>
         </div>
         <footer>
-            Support me: <a class="github-button" href="https://github.com/DeathMiner/RewardsGG-Farm" data-icon="octicon-star" data-style="mega" data-count-href="/DeathMiner/RewardsGG-Farm/stargazers" data-count-api="/repos/DeathMiner/RewardsGG-Farm#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star DeathMiner/RewardsGG-Farm on GitHub">Star</a> | Report a bug: <a class="github-button" href="https://github.com/DeathMiner/RewardsGG-Farm/issues" data-icon="octicon-issue-opened" data-style="mega" data-count-api="/repos/DeathMiner/RewardsGG-Farm#open_issues_count" data-count-aria-label="# issues on GitHub" aria-label="Issue DeathMiner/RewardsGG-Farm on GitHub">Issue</a>
+            Support me: <a class="github-button" href="https://github.com/DeathMiner/RewardsGG-Farm" data-icon="octicon-star" data-style="mega" data-count-href="/DeathMiner/RewardsGG-Farm/stargazers" data-count-api="/repos/DeathMiner/RewardsGG-Farm#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star DeathMiner/RewardsGG-Farm on GitHub">Star</a> | Report a bug: <a class="github-button" href="https://github.com/DeathMiner/RewardsGG-Farm/issues" data-icon="octicon-issue-opened" data-style="mega" data-count-api="/repos/DeathMiner/RewardsGG-Farm#open_issues_count" data-count-aria-label="# issues on GitHub" aria-label="Issue DeathMiner/RewardsGG-Farm on GitHub">Issue</a> | <a href="https://github.com/DeathMiner/RewardsGG-Farm">GitHub project</a>
         </footer>
         <div id="ALERT_WINDOW" hidden>
             <div class="inner">
