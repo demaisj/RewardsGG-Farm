@@ -311,7 +311,13 @@
     function ad_interval_check(){
         // Moved in timer_interval_check
 
-        try_ad();
+        if(ad_remaining < 0){
+
+            // Some random-thingy to be "human & real™"
+            if(Math.floor(Math.random()*100) == 42){
+                try_ad();
+            }
+        }
     }
 
     // Check for updates on github
