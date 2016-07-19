@@ -309,7 +309,8 @@
 
     // Excecutes each minute
     function ad_interval_check(){
-        // Moved in timer_interval_check
+        var ad_difference = Math.floor(new Date().getTime()/1000) - ad_last_time;
+        var ad_remaining = ad_interval - ad_difference;
 
         if(ad_remaining < 0){
 
