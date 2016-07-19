@@ -156,10 +156,14 @@
 
         // Ajax routes
         api_routes = {
-            app_add_adv_click_tickets: "\/user\/add-adv-click-tickets",
-            app_add_fb_share_tickets: "\/user\/add-fb-share-tickets",
-            app_add_twitter_share_tickets: "\/user\/add-twitter-share-tickets",
-            app_add_tickets: "\/user\/addTickets"
+            app_add_adv_click_tickets: "/user/add-adv-click-tickets",
+            app_add_tickets: "/user/addTickets",
+            app_add_g2a_reflink_tickets: "/user/add-g2a-reflink-tickets",
+            app_add_youtube_subscribe_tickets: "/user/youtube-subscription-tickets",
+            app_add_steam_username_tickets: "/steam-username-tickets",
+            app_add_twitter_follow_tickets: "/user/add-twitter-follow-tickets",
+            app_add_fb_share_tickets: "/user/add-fb-share-tickets",
+            app_add_twitter_share_tickets: "/user/add-twitter-share-tickets"
         };
 
     // Changes title of the page
@@ -274,6 +278,123 @@
         })
     }
 
+    // Try to get some extra-ticket
+    function try_extra(){
+        var link_en = "You must link your account (My account - Link my account)",
+            link_fr = "Vous devez lier votre compte Twitter (Mon compte - Associer mon compte)";
+
+        // Facebook Share
+        request('app_add_fb_share_tickets', function(xhr){
+            var data = xhr.response;
+
+            if(data.msg){
+                if(data.ticket){
+                    add_tickets(data.ticket);
+                    log("Shared on Facebook! Earned "+data.ticket+" tickets!");
+                }
+                else if(data.msg.text == link_en || data.msg.text == link_fr){
+                    log("Can't share on Facebook, please link your account!");
+                }
+                console.log("FB SHARE: "+data.msg.text);
+            }
+            else{
+                error();
+            }
+        }, "&id=959390494177796_972681042848741") // Dummy post-id to validate the share!
+
+        // Twitter Share
+        request('app_add_twitter_share_tickets', function(xhr){
+            var data = xhr.response;
+
+            if(data.msg){
+                if(data.ticket){
+                    add_tickets(data.ticket);
+                    log("Shared on Twitter! Earned "+data.ticket+" tickets!");
+                }
+                else if(data.msg.text == link_en || data.msg.text == link_fr){
+                    log("Can't share on Twitter, please link your account!");
+                }
+                console.log("TW SHARE: "+data.msg.text);
+            }
+            else{
+                error();
+            }
+        })
+        
+        // G2A Reflink
+        request('app_add_g2a_reflink_tickets', function(xhr){
+            var data = xhr.response;
+
+            if(data.msg){
+                if(data.ticket){
+                    add_tickets(data.ticket);
+                    log("Clicked G2A! Earned "+data.ticket+" tickets!");
+                }
+                console.log("G2A CLICK: "+data.msg.text);
+            }
+            else{
+                error();
+            }
+        })
+     
+        // Twitter Follow
+        request('app_add_twitter_follow_tickets', function(xhr){
+            var data = xhr.response;
+
+            if(data.msg){
+                if(data.ticket){
+                    add_tickets(data.ticket);
+                    log("Followed on Twitter! Earned "+data.ticket+" tickets!");
+                }
+                else if(data.msg.text == link_en || data.msg.text == link_fr){
+                    log("Can't follow on Twitter, please link your account!");
+                }
+                console.log("TW FOLLOW: "+data.msg.text);
+            }
+            else{
+                error();
+            }
+        })
+        
+        // Steam Username
+        request('app_add_steam_username_tickets', function(xhr){
+            var data = xhr.response;
+
+            if(data.msg){
+                if(data.ticket){
+                    add_tickets(data.ticket);
+                    log("Steam username valid! Earned "+data.ticket+" tickets!");
+                }
+                else if(data.msg.text == link_en || data.msg.text == link_fr){
+                    log("Can't check Steam username, please link your account!");
+                }
+                console.log("STEAM USERNAME: "+data.msg.text);
+            }
+            else{
+                error();
+            }
+        })
+        
+        // YouTube Sub [NOT ACTIVE YET]
+        /*request('app_add_youtube_subscribe_tickets', function(xhr){
+            var data = xhr.response;
+
+            if(data.msg){
+                if(data.ticket){
+                    add_tickets(data.ticket);
+                    log("Subscribed on YouTube! Earned "+data.ticket+" tickets!");
+                }
+                else if(data.msg.text == link_en || data.msg.text == link_fr){
+                    log("Can't check YouTube Subscription, please link your account!");
+                }
+                console.log("YT SUB: "+data.msg.text);
+            }
+            else{
+                error();
+            }
+        })*/
+    }
+
     // Excecutes each second
     function timer_interval_check(){
 
@@ -321,6 +442,8 @@
                 try_ad();
             }
         }
+
+        try_extra();
     }
 
     // Check for updates on github
