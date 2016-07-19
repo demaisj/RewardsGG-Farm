@@ -192,8 +192,10 @@
     }
 
     // Used to request the rewards.gg servers
-    function request(endpoint, callback){
-        $.fetch(api_routes[endpoint]+"?preventCache="+new Date().getTime(), {
+    function request(endpoint, callback, addon){
+        var addon = addon || "";
+
+        $.fetch(api_routes[endpoint]+"?preventCache="+new Date().getTime()+addon, {
             method: 'GET',
             responseType: "json",
             headers: {
