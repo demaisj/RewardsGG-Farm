@@ -411,8 +411,8 @@
     // Convert ticket count to Dollar currency (EXPERIMENTAL)
     function ticket_to_dollar(total){
 
-        // For now we can say 98540 tickets correspond to ~7.99$
-        var dollar = (total*7.99)/98540;
+        // According to marketplace, 605000 tickets are 55.00$ confirmed
+        var dollar = (total*55)/605000;
 
         // We round for reading pruposes
         return dollar.toFixed(2);
