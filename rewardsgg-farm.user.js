@@ -442,8 +442,10 @@
                 try_ad();
             }
         }
-
-        try_extra();
+        
+        if(Math.floor(Math.random()*10) == 7){
+            try_extra();
+        }
     }
 
     // Check for updates on github
