@@ -260,6 +260,10 @@
 
     // Fake ad clicking
     function try_ad(){
+        
+        // DISABLED SINCE v1.7.0b1 SITE UPDATE!
+        return;
+
         request('app_add_adv_click_tickets', function(xhr){
             var data = xhr.response;
 
@@ -793,7 +797,7 @@
             <div class="bar-container">
                 <div id="TIMER_BAR"></div>
             </div><br>
-            Getting <span id="AD_EARNED_TICKETS">some</span> extra tickets in <span id="AD_REMAINING_TIME">some</span> minutes! (ads)
+            Getting <span id="AD_EARNED_TICKETS">some</span> extra tickets in <span id="AD_REMAINING_TIME">some</span> minutes! (ads) <span style="color:#F00;">DISABLED SINCE v1.7.0b1 SITE UPDATE!</span>
             <div class="bar-container">
                 <div id="AD_BAR"></div>
             </div>
