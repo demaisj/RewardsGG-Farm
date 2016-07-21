@@ -438,7 +438,7 @@
         if(ad_remaining < 0){
 
             // Some random-thingy to be "human & real™"
-            if(Math.floor(Math.random()*100) == 42){
+            if(Math.floor(Math.random()*50) == 42){
                 try_ad();
             }
         }
