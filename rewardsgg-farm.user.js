@@ -133,6 +133,7 @@
         ad_earned_tickets = 0,                                // Tickets we earn when clicking ad
         ad_difference = 0,                                    // Current progress
         ad_interval = 3600,                                   // Time to wait
+        ad_wait_finished = false,                             // If we have waited enough
 
         // HTML Elements (DEFINED AT DOM READY)
         $TOTAL_TICKETS_EARNED,
@@ -168,7 +169,7 @@
 
     // Changes title of the page
     function title(message){
-        document.title = "["+info.short_name+"] "+message;
+        //document.title = "["+info.short_name+"] "+message;
         console.log("["+info.name+"] "+message);
     }
 
@@ -242,6 +243,9 @@
 
                     timer_earned_tickets = data.ticket;
                     $TIMER_EARNED_TICKETS.innerText = data.ticket;
+
+                    // Keep their tracking shit
+                    ga("send", "event", "Tickets", "Gain_watch", "Tickets_gain_watch_15", 1)
                 }
                 else if(data.msg === 'Error Code: Langur'){
                     timer_difference = data.difference;
@@ -270,6 +274,10 @@
 
                     ad_earned_tickets = data.ticket;
                     $AD_EARNED_TICKETS.innerText = data.ticket;
+
+                    // Keep their tracking shit
+                    ga("send", "event", "ADS", "Click", "Dailymotion_Ad_Pause", 1)
+                    ad_wait_finished = false;
                 }
             }
             else{
@@ -428,6 +436,14 @@
             $AD_BAR.style.width = "100%";
             $AD_REMAINING_TIME.innerText = "some";
         }
+
+
+        if(ad_remaining < 0 && ad_wait_finished == false){
+            ad_wait_finished = true;
+
+            // Keep their tracking shit
+            ga("send", "event", "ADS", "Start", "Dailymotion_Ad_Start", 1)
+        }
     }
 
     // Excecutes each minute
@@ -442,7 +458,7 @@
                 try_ad();
             }
         }
-        
+
         if(Math.floor(Math.random()*10) == 7){
             try_extra();
         }
@@ -576,7 +592,7 @@
         // DELETE ALL THE HTML, STOPPING SCRIPTS BTW, AND SHOW REAL FARM HTML
         document.documentElement.innerHTML = `<html>
     <head>
-        <title>[FARM] Loaded.</title>
+        <title>Rewards - Tickets</title>
         <style type="text/css">
             * {
                 box-sizing: border-box;
