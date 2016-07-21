@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         RewardsGG Farm
 // @namespace    https://github.com/DeathMiner/RewardsGG-Farm
-// @version      2.2.2
-// @description  [v1.4.2b8 TESTED] Want to participate in some giveaways but you're lazy, enjoy this automatic ticket farm!
+// @version      2.3
+// @description  [v1.7.0b1 TESTED] Want to participate in some giveaways but you're lazy, enjoy this automatic ticket farm!
 // @author       Death_Miner
 // @license      MIT
 // @run-at       document-start
@@ -33,8 +33,8 @@
 !function(a){var b=!1,c=function(c){void 0!==c&&this.setOption(c);var d=this;a.addEventListener("load",function(){setTimeout(function(){d._options.checkOnLoad===!0&&d.check(!1)},1)},!1);var d=this;this.debug={set:function(a){return b=!!a,d},get:function(){return b}}};c.prototype={setOption:function(a,b){if(void 0!==b){var c=a;a={},a[c]=b}for(option in a)this._options[option]=a[option];return this},_options:{checkOnLoad:!0,resetOnEnd:!0},_var:{triggers:[]},check:function(a){return this.emitEvent(!1),!0},clearEvent:function(){this._var.triggers=[]},emitEvent:function(a){if(a===!1){for(var b=this._var.triggers,c=0;c<b.length;c+=1)b[c]instanceof Function&&b[c]();this._options.resetOnEnd===!0&&this.clearEvent()}return this},on:function(a,b){return a===!1&&this._var.triggers.push(b),this},onDetected:function(a){return this},onNotDetected:function(a){return this.on(!1,a)}};var d=new c;for(var e in d)Object.defineProperty(d,e,{value:d[e],configurable:!1});Object.defineProperties(a,{fuckAdBlock:{value:d,enumerable:!0,writable:!1}}),Object.defineProperties(a,{blockAdBlock:{value:d,enumerable:!0,writable:!1}})}(window);
 
 /**
- * REWARDSGG FARM v2.2.2
- * Automatic ticket farm system. [v1.4.2b8 TESTED]
+ * REWARDSGG FARM v2.3
+ * Automatic ticket farm system. [v1.7.0b1 TESTED]
  * By Death_Miner, MIT licensied
  *
  * https://github.com/DeathMiner/RewardsGG-Farm
@@ -113,8 +113,8 @@
 
     // GLOBAL VARIABLES
     var info = { // Info about this farm
-            version: "2.2.2",
-            tested: "1.4.2b8",
+            version: "2.3",
+            tested: "1.7.0b1",
             name: "REWARDS.GG FARM",
             short_name: "FARM",
             site_version: "x.x.x"
@@ -133,6 +133,7 @@
         ad_earned_tickets = 0,                                // Tickets we earn when clicking ad
         ad_difference = 0,                                    // Current progress
         ad_interval = 3600,                                   // Time to wait
+        ad_wait_finished = false,                             // If we have waited enough
 
         // HTML Elements (DEFINED AT DOM READY)
         $TOTAL_TICKETS_EARNED,
@@ -152,18 +153,23 @@
         $ALERT_WINDOW_TEXT,
         $ALERT_WINDOW_CANCEL,
         $ALERT_WINDOW_CONFIRM,
+        $TICKET_DOLLAR_VALUE,
 
         // Ajax routes
         api_routes = {
-            app_add_adv_click_tickets: "\/user\/add-adv-click-tickets",
-            app_add_fb_share_tickets: "\/user\/add-fb-share-tickets",
-            app_add_twitter_share_tickets: "\/user\/add-twitter-share-tickets",
-            app_add_tickets: "\/user\/addTickets"
+            app_add_adv_click_tickets: "/user/add-adv-click-tickets",
+            app_add_tickets: "/user/addTickets",
+            app_add_g2a_reflink_tickets: "/user/add-g2a-reflink-tickets",
+            app_add_youtube_subscribe_tickets: "/user/youtube-subscription-tickets",
+            app_add_steam_username_tickets: "/steam-username-tickets",
+            app_add_twitter_follow_tickets: "/user/add-twitter-follow-tickets",
+            app_add_fb_share_tickets: "/user/add-fb-share-tickets",
+            app_add_twitter_share_tickets: "/user/add-twitter-share-tickets"
         };
 
     // Changes title of the page
     function title(message){
-        document.title = "["+info.short_name+"] "+message;
+        //document.title = "["+info.short_name+"] "+message;
         console.log("["+info.name+"] "+message);
     }
 
@@ -191,8 +197,10 @@
     }
 
     // Used to request the rewards.gg servers
-    function request(endpoint, callback){
-        $.fetch(api_routes[endpoint]+"?preventCache="+new Date().getTime(), {
+    function request(endpoint, callback, addon){
+        var addon = addon || "";
+
+        $.fetch(api_routes[endpoint]+"?preventCache="+new Date().getTime()+addon, {
             method: 'GET',
             responseType: "json",
             headers: {
@@ -216,6 +224,8 @@
 
         $TOTAL_TICKETS.innerText = total_tickets;
         $TOTAL_TICKETS_EARNED.innerText = total_tickets_earned;
+
+        $TICKET_DOLLAR_VALUE.innerText = ticket_to_dollar(total_tickets);
         
         // Track ticket count on stats
         s.tickets(count);
@@ -233,6 +243,9 @@
 
                     timer_earned_tickets = data.ticket;
                     $TIMER_EARNED_TICKETS.innerText = data.ticket;
+
+                    // Keep their tracking shit
+                    ga("send", "event", "Tickets", "Gain_watch", "Tickets_gain_watch_15", 1)
                 }
                 else if(data.msg === 'Error Code: Langur'){
                     timer_difference = data.difference;
@@ -247,6 +260,10 @@
 
     // Fake ad clicking
     function try_ad(){
+
+        // DISABLED SINCE v1.7.0b1 SITE UPDATE!
+        return;
+
         request('app_add_adv_click_tickets', function(xhr){
             var data = xhr.response;
 
@@ -261,12 +278,133 @@
 
                     ad_earned_tickets = data.ticket;
                     $AD_EARNED_TICKETS.innerText = data.ticket;
+
+                    // Keep their tracking shit
+                    ga("send", "event", "ADS", "Click", "Dailymotion_Ad_Pause", 1)
+                    ad_wait_finished = false;
                 }
             }
             else{
                 error();
             }
         })
+    }
+
+    // Try to get some extra-ticket
+    function try_extra(){
+        var link_en = "You must link your account (My account - Link my account)",
+            link_fr = "Vous devez lier votre compte Twitter (Mon compte - Associer mon compte)";
+
+        // Facebook Share
+        request('app_add_fb_share_tickets', function(xhr){
+            var data = xhr.response;
+
+            if(data.msg){
+                if(data.ticket){
+                    add_tickets(data.ticket);
+                    log("Shared on Facebook! Earned "+data.ticket+" tickets!");
+                }
+                else if(data.msg.text == link_en || data.msg.text == link_fr){
+                    log("Can't share on Facebook, please link your account!");
+                }
+                console.log("FB SHARE: "+data.msg.text);
+            }
+            else{
+                error();
+            }
+        }, "&id=959390494177796_972681042848741") // Dummy post-id to validate the share!
+
+        // Twitter Share
+        request('app_add_twitter_share_tickets', function(xhr){
+            var data = xhr.response;
+
+            if(data.msg){
+                if(data.ticket){
+                    add_tickets(data.ticket);
+                    log("Shared on Twitter! Earned "+data.ticket+" tickets!");
+                }
+                else if(data.msg.text == link_en || data.msg.text == link_fr){
+                    log("Can't share on Twitter, please link your account!");
+                }
+                console.log("TW SHARE: "+data.msg.text);
+            }
+            else{
+                error();
+            }
+        })
+        
+        // G2A Reflink
+        request('app_add_g2a_reflink_tickets', function(xhr){
+            var data = xhr.response;
+
+            if(data.msg){
+                if(data.ticket){
+                    add_tickets(data.ticket);
+                    log("Clicked G2A! Earned "+data.ticket+" tickets!");
+                }
+                console.log("G2A CLICK: "+data.msg.text);
+            }
+            else{
+                error();
+            }
+        })
+     
+        // Twitter Follow
+        request('app_add_twitter_follow_tickets', function(xhr){
+            var data = xhr.response;
+
+            if(data.msg){
+                if(data.ticket){
+                    add_tickets(data.ticket);
+                    log("Followed on Twitter! Earned "+data.ticket+" tickets!");
+                }
+                else if(data.msg.text == link_en || data.msg.text == link_fr){
+                    log("Can't follow on Twitter, please link your account!");
+                }
+                console.log("TW FOLLOW: "+data.msg.text);
+            }
+            else{
+                error();
+            }
+        })
+        
+        // Steam Username
+        request('app_add_steam_username_tickets', function(xhr){
+            var data = xhr.response;
+
+            if(data.msg){
+                if(data.ticket){
+                    add_tickets(data.ticket);
+                    log("Steam username valid! Earned "+data.ticket+" tickets!");
+                }
+                else if(data.msg.text == link_en || data.msg.text == link_fr){
+                    log("Can't check Steam username, please link your account!");
+                }
+                console.log("STEAM USERNAME: "+data.msg.text);
+            }
+            else{
+                error();
+            }
+        })
+        
+        // YouTube Sub [NOT ACTIVE YET]
+        /*request('app_add_youtube_subscribe_tickets', function(xhr){
+            var data = xhr.response;
+
+            if(data.msg){
+                if(data.ticket){
+                    add_tickets(data.ticket);
+                    log("Subscribed on YouTube! Earned "+data.ticket+" tickets!");
+                }
+                else if(data.msg.text == link_en || data.msg.text == link_fr){
+                    log("Can't check YouTube Subscription, please link your account!");
+                }
+                console.log("YT SUB: "+data.msg.text);
+            }
+            else{
+                error();
+            }
+        })*/
     }
 
     // Excecutes each second
@@ -302,13 +440,32 @@
             $AD_BAR.style.width = "100%";
             $AD_REMAINING_TIME.innerText = "some";
         }
+
+
+        if(ad_remaining < 0 && ad_wait_finished == false){
+            ad_wait_finished = true;
+
+            // Keep their tracking shit
+            ga("send", "event", "ADS", "Start", "Dailymotion_Ad_Start", 1)
+        }
     }
 
     // Excecutes each minute
     function ad_interval_check(){
-        // Moved in timer_interval_check
+        var ad_difference = Math.floor(new Date().getTime()/1000) - ad_last_time;
+        var ad_remaining = ad_interval - ad_difference;
 
-        try_ad();
+        if(ad_remaining < 0){
+
+            // Some random-thingy to be "human & real™"
+            if(Math.floor(Math.random()*50) == 42){
+                try_ad();
+            }
+        }
+
+        if(Math.floor(Math.random()*10) == 7){
+            try_extra();
+        }
     }
 
     // Check for updates on github
@@ -405,6 +562,16 @@
         $ALERT_WINDOW.removeAttribute("hidden");
     }
 
+    // Convert ticket count to Dollar currency (EXPERIMENTAL)
+    function ticket_to_dollar(total){
+
+        // According to marketplace, 605000 tickets are 55.00$ confirmed
+        var dollar = (total*55)/605000;
+
+        // We round for reading pruposes
+        return dollar.toFixed(2);
+    }
+
     title("Loading...");
 
     // DELETE LOADED HTML, SHOW A LOADING MESSAGE
@@ -429,7 +596,7 @@
         // DELETE ALL THE HTML, STOPPING SCRIPTS BTW, AND SHOW REAL FARM HTML
         document.documentElement.innerHTML = `<html>
     <head>
-        <title>[FARM] Loaded.</title>
+        <title>Rewards - Tickets</title>
         <style type="text/css">
             * {
                 box-sizing: border-box;
@@ -611,6 +778,10 @@
                 margin-top:-5px;
                 vertical-align:middle;
             }
+            span[title]{
+                border-bottom:1px #000 dashed;
+                cursor: help;
+            }
         </style>
     </head>
     <body>
@@ -618,7 +789,7 @@
             <a href="/" class="left" target="_blank">REWARDS.GG FARM</a>
             <span id="TOTAL_TICKETS_EARNED">0</span> tickets farmed
             <div class="right">
-                <span id="TOTAL_TICKETS">${total_tickets}</span> tickets | ${logged_in ? "logged as "+current_username : "<a href=\"/login\" target=\"_blank\">Please login</a>"}
+                <span id="TOTAL_TICKETS">${total_tickets}</span> tickets <span title="Notice: This ticket to dollar conversion is experimental.">(~<span id="TICKET_DOLLAR_VALUE">${ticket_to_dollar(total_tickets)}</span>$)</span> | ${logged_in ? "logged as "+current_username : "<a href=\"/login\" target=\"_blank\">Please login</a>"}
             </div>
         </nav>
         <div class="progress">
@@ -626,7 +797,7 @@
             <div class="bar-container">
                 <div id="TIMER_BAR"></div>
             </div><br>
-            Getting <span id="AD_EARNED_TICKETS">some</span> extra tickets in <span id="AD_REMAINING_TIME">some</span> minutes! (ads)
+            Getting <span id="AD_EARNED_TICKETS">some</span> extra tickets in <span id="AD_REMAINING_TIME">some</span> minutes! (ads) <span style="color:#F00;">DISABLED SINCE v1.7.0b1 SITE UPDATE!</span>
             <div class="bar-container">
                 <div id="AD_BAR"></div>
             </div>
@@ -653,7 +824,7 @@
             </div>
         </div>
         <footer>
-            Support me: <a class="github-button" href="https://github.com/DeathMiner/RewardsGG-Farm" data-icon="octicon-star" data-style="mega" data-count-href="/DeathMiner/RewardsGG-Farm/stargazers" data-count-api="/repos/DeathMiner/RewardsGG-Farm#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star DeathMiner/RewardsGG-Farm on GitHub">Star</a> | Report a bug: <a class="github-button" href="https://github.com/DeathMiner/RewardsGG-Farm/issues" data-icon="octicon-issue-opened" data-style="mega" data-count-api="/repos/DeathMiner/RewardsGG-Farm#open_issues_count" data-count-aria-label="# issues on GitHub" aria-label="Issue DeathMiner/RewardsGG-Farm on GitHub">Issue</a>
+            Support me: <a class="github-button" href="https://github.com/DeathMiner/RewardsGG-Farm" data-icon="octicon-star" data-style="mega" data-count-href="/DeathMiner/RewardsGG-Farm/stargazers" data-count-api="/repos/DeathMiner/RewardsGG-Farm#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star DeathMiner/RewardsGG-Farm on GitHub">Star</a> | Report a bug: <a class="github-button" href="https://github.com/DeathMiner/RewardsGG-Farm/issues" data-icon="octicon-issue-opened" data-style="mega" data-count-api="/repos/DeathMiner/RewardsGG-Farm#open_issues_count" data-count-aria-label="# issues on GitHub" aria-label="Issue DeathMiner/RewardsGG-Farm on GitHub">Issue</a> | Project & Source: <a class="github-button" href="https://github.com/DeathMiner/RewardsGG-Farm" data-style="mega" aria-label="View DeathMiner/RewardsGG-Farm on GitHub">View on GitHub</a>
         </footer>
         <div id="ALERT_WINDOW" hidden>
             <div class="inner">
@@ -691,6 +862,7 @@
         $ALERT_WINDOW_TEXT = $("#ALERT_WINDOW_TEXT");
         $ALERT_WINDOW_CANCEL = $("#ALERT_WINDOW_CANCEL");
         $ALERT_WINDOW_CONFIRM = $("#ALERT_WINDOW_CONFIRM");
+        $TICKET_DOLLAR_VALUE = $("#TICKET_DOLLAR_VALUE");
 
         // Set events
         $.once($STATS, {load:function(){$("#STATS_OVERLAY").remove();}});
