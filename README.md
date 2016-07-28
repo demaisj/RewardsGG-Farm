@@ -11,11 +11,13 @@ Working only on **[Rewards.gg](https://rewards.gg)**.
 
 Features:
 - Removes stream, ads and annoying content
-- Auto click stream ad
-- Auto add some random tickets (5 per day)
+- _Auto click stream ad_ **Removed in v1.7.1b1 Site Update**
+- Auto add some random tickets
 - Auto spam the server to get tickets
 
 This script is updating automatically, you don't need to go & check updates by yourself.
+
+> **28/07/2016: I got my account locked today, I can't test updates anymore (maybe it's because I flushed out all my illegal tickets xD). I'll start to develop new updates when I'll create a new account under a brand new IP, PC & Browser (it will be near September 2016). Please be patient and send me all the suggestions you want.**
 
 **How to install:**
 - Install the [Tampermonkey](http://tampermonkey.net/) extension
