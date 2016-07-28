@@ -19,6 +19,8 @@ This script is updating automatically, you don't need to go & check updates by y
 
 > **28/07/2016: I got my account locked today, I can't test updates anymore (maybe it's because I flushed out all my illegal tickets xD). I'll start to develop new updates when I'll create a new account under a brand new IP, PC & Browser (it will be near September 2016). Please be patient and send me all the suggestions you want.**
 
+> **My account got locked without me being warned, because I'm the developer of this farm. But they were pretty slow to lock my account since the launch of their website xD**
+
 **How to install:**
 - Install the [Tampermonkey](http://tampermonkey.net/) extension
 - Click **[Install script](https://github.com/DeathMiner/RewardsGG-Farm/raw/master/rewardsgg-farm.user.js)**
